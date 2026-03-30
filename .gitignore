@@ -17,6 +17,10 @@ out/
 __pycache__/
 *.pyc
 
+# Godot generated files
+godot-novel-maker/.godot/
+godot-novel-maker/android/
+
 # OS files
 .DS_Store
 Thumbs.db
