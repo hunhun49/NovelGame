@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/novel_scene.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/NovelScene.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/components/settings_panel.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/components/save_load_panel.tscn" id="3"]
 
 [node name="NovelScene" type="Control"]
 layout_mode = 3
@@ -19,6 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+stretch_mode = 6
 
 [node name="CharacterLayer" type="Control" parent="."]
 layout_mode = 1
@@ -36,6 +38,7 @@ anchor_bottom = 0.8
 offset_left = 40.0
 offset_right = 360.0
 offset_bottom = -220.0
+stretch_mode = 6
 
 [node name="CenterSlot" type="TextureRect" parent="CharacterLayer"]
 layout_mode = 1
@@ -46,6 +49,7 @@ anchor_bottom = 0.82
 offset_left = -210.0
 offset_right = 210.0
 offset_bottom = -220.0
+stretch_mode = 6
 
 [node name="RightSlot" type="TextureRect" parent="CharacterLayer"]
 layout_mode = 1
@@ -56,6 +60,7 @@ anchor_bottom = 0.8
 offset_left = -360.0
 offset_right = -40.0
 offset_bottom = -220.0
+stretch_mode = 6
 
 [node name="CgLayer" type="TextureRect" parent="."]
 visible = false
@@ -65,6 +70,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+stretch_mode = 6
 
 [node name="FxLayer" type="ColorRect" parent="."]
 layout_mode = 1
@@ -73,7 +79,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 1, 1, 0)
+color = Color(0, 0, 0, 0)
 mouse_filter = 2
 
 [node name="UiLayer" type="Control" parent="."]
@@ -88,7 +94,7 @@ grow_vertical = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 86.0
+offset_bottom = 124.0
 grow_horizontal = 2
 
 [node name="Margin" type="MarginContainer" parent="UiLayer/TopBar"]
@@ -104,50 +110,64 @@ theme_override_constants/separation = 8
 
 [node name="InfoRow" type="HBoxContainer" parent="UiLayer/TopBar/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 12
 
 [node name="SceneLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Scene: novel_scene"
+autowrap_mode = 0
+text = "세계관: 미선택"
 
 [node name="BackendLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
-text = "Backend: http"
+size_flags_horizontal = 3
+autowrap_mode = 0
+text = "백엔드: http"
 
 [node name="LocationLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-text = "Location: prototype_room_night"
+size_flags_horizontal = 3
+autowrap_mode = 0
+text = "주연: 미선택"
 
 [node name="ModeLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+custom_minimum_size = Vector2(180, 0)
 layout_mode = 2
-text = "Mode: layered"
+size_flags_horizontal = 3
+autowrap_mode = 0
+text = "위치: demo_room"
 
 [node name="LibraryLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
-text = "Library: unconfigured"
+size_flags_horizontal = 3
+autowrap_mode = 0
+text = "라이브러리: 미설정"
 
 [node name="SettingsButton" type="Button" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
 layout_mode = 2
-text = "Settings"
+text = "설정"
 
 [node name="RenderStatusLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox"]
 layout_mode = 2
-autowrap_mode = 3
-text = "Render status will appear here."
+autowrap_mode = 0
+text = "장면 상태가 여기에 표시됩니다."
 
 [node name="DialoguePanel" type="PanelContainer" parent="UiLayer"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
+anchor_top = 0.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 24.0
-offset_top = -240.0
+offset_top = 132.0
 offset_right = -24.0
 offset_bottom = -24.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 
 [node name="Margin" type="MarginContainer" parent="UiLayer/DialoguePanel"]
 layout_mode = 2
@@ -158,55 +178,84 @@ theme_override_constants/margin_bottom = 18
 
 [node name="VBox" type="VBoxContainer" parent="UiLayer/DialoguePanel/Margin"]
 layout_mode = 2
+size_flags_vertical = 3
 theme_override_constants/separation = 10
 
-[node name="NarrationLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
+[node name="StoryScroll" type="ScrollContainer" parent="UiLayer/DialoguePanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StoryVBox" type="VBoxContainer" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="NarrationLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Narration will appear here."
+text = "내레이션이 여기에 표시됩니다."
 
-[node name="SpeakerLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
+[node name="SpeakerLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
-text = "Speaker"
+text = "화자"
 
-[node name="DialogueLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
+[node name="DialogueLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Dialogue output will appear here."
+text = "대사가 여기에 표시됩니다."
 
-[node name="ActionLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
+[node name="ActionLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Action output will appear here."
+text = "행동 설명이 여기에 표시됩니다."
+
+[node name="InputEdit" type="TextEdit" parent="UiLayer/DialoguePanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 96)
+layout_mode = 2
 
 [node name="ControlsRow" type="HBoxContainer" parent="UiLayer/DialoguePanel/Margin/VBox"]
 layout_mode = 2
-theme_override_constants/separation = 10
+theme_override_constants/separation = 8
 
-[node name="InputEdit" type="LineEdit" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+[node name="LegacyInputSpacer" type="LineEdit" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "Type the next line for the prototype turn..."
+placeholder_text = "다음 장면에 대한 행동이나 대사를 입력하세요..."
 
 [node name="GenerateButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
 layout_mode = 2
-text = "Generate Turn"
+text = "생성"
 
 [node name="QuickSaveButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
 layout_mode = 2
-text = "Quick Save"
+text = "빠른 저장"
+
+[node name="SaveButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+layout_mode = 2
+text = "저장"
+
+[node name="LoadButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+layout_mode = 2
+text = "불러오기"
+
+[node name="RollbackButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+layout_mode = 2
+text = "되돌리기"
 
 [node name="MenuButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
 layout_mode = 2
-text = "Back to Menu"
+text = "메인 메뉴"
 
 [node name="FooterStatusLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Waiting for prototype input."
+text = "다음 장면 입력을 기다리고 있습니다."
 
 [node name="SettingsPanel" parent="UiLayer" instance=ExtResource("2")]
+
+[node name="SaveLoadPanel" parent="UiLayer" instance=ExtResource("3")]
 
 [node name="OverlayLayer" type="Control" parent="."]
 layout_mode = 1
@@ -216,3 +265,75 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="OnboardingOverlay" type="Control" parent="OverlayLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Shade" type="ColorRect" parent="OverlayLayer/OnboardingOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="PanelContainer" parent="OverlayLayer/OnboardingOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -340.0
+offset_top = -170.0
+offset_right = 340.0
+offset_bottom = 170.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="OverlayLayer/OnboardingOverlay/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="OverlayLayer/OnboardingOverlay/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="TitleLabel" type="Label" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 1
+text = "자산 라이브러리를 먼저 선택하세요"
+
+[node name="BodyLabel" type="Label" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "턴을 생성하기 전에 데모 라이브러리를 쓰거나 직접 준비한 폴더를 선택하세요."
+
+[node name="Buttons" type="HBoxContainer" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="UseDemoLibraryButton" type="Button" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox/Buttons"]
+layout_mode = 2
+text = "데모 라이브러리 사용"
+
+[node name="EnableDemoSessionButton" type="Button" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox/Buttons"]
+layout_mode = 2
+text = "데모 세션 켜기"
+
+[node name="OpenSettingsButton" type="Button" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox/Buttons"]
+layout_mode = 2
+text = "설정 열기"

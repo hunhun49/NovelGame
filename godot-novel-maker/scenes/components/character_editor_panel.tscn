@@ -1,0 +1,479 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/CharacterEditorPanel.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/components/image_cropper_popup.tscn" id="2"]
+
+[node name="CharacterEditorOverlay" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.76)
+
+[node name="Panel" type="PanelContainer" parent="Dimmer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.08
+anchor_top = 0.06
+anchor_right = 0.92
+anchor_bottom = 0.94
+grow_horizontal = 2
+grow_vertical = 2
+clip_contents = true
+
+[node name="Margin" type="MarginContainer" parent="Dimmer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 22
+theme_override_constants/margin_right = 22
+theme_override_constants/margin_bottom = 22
+
+[node name="Root" type="VBoxContainer" parent="Dimmer/Panel/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HeaderText" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Header/HeaderText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "인물 만들기"
+
+[node name="StatusLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Header/HeaderText"]
+layout_mode = 2
+autowrap_mode = 3
+text = "주연 캐릭터를 전역 인물 데이터로 관리합니다."
+
+[node name="ActionButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/Header"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="NewButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "새로 만들기"
+
+[node name="SaveButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "저장"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="CloseButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "닫기"
+
+[node name="ContentScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="Content" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="LeftColumn" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="CharacterListLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/LeftColumn"]
+layout_mode = 2
+text = "인물 목록"
+
+[node name="CharacterList" type="ItemList" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/LeftColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RightColumn" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProfileTab" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer"]
+layout_mode = 2
+
+[node name="ProfileScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProfileVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="ThumbnailSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ThumbnailTitle" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection"]
+layout_mode = 2
+text = "썸네일"
+
+[node name="ThumbnailHint" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection"]
+layout_mode = 2
+autowrap_mode = 3
+text = "2:5 / 600x1500"
+
+[node name="ThumbnailRow" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ThumbnailFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow"]
+layout_mode = 2
+
+[node name="ThumbnailRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow/ThumbnailFrame"]
+custom_minimum_size = Vector2(120, 300)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="ThumbnailInfo" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="ThumbnailPathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow/ThumbnailInfo"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="ThumbnailButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow/ThumbnailInfo"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow/ThumbnailInfo/ThumbnailButtons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ThumbnailSection/ThumbnailRow/ThumbnailInfo/ThumbnailButtons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="NameSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="NameLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/NameSection"]
+layout_mode = 2
+text = "이름"
+
+[node name="NameEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/NameSection"]
+layout_mode = 2
+
+[node name="NameCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/NameSection"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/30"
+
+[node name="SummarySection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="SummaryLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/SummarySection"]
+layout_mode = 2
+text = "한 줄 소개"
+
+[node name="SummaryEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/SummarySection"]
+layout_mode = 2
+
+[node name="SummaryCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/SummarySection"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/30"
+
+[node name="PersonalityTab" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer"]
+layout_mode = 2
+
+[node name="PersonalityScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PersonalityVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="MainPersonalitySection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="MainPersonalityLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/MainPersonalitySection"]
+layout_mode = 2
+text = "메인 성격"
+
+[node name="MainPersonalityOption" type="OptionButton" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/MainPersonalitySection"]
+layout_mode = 2
+
+[node name="SubPersonalitySection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SubHeader" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SubPersonalitySection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SubTitle" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SubPersonalitySection/SubHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "서브 성격"
+
+[node name="AddSubPersonalityButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SubPersonalitySection/SubHeader"]
+layout_mode = 2
+text = "+ 추가"
+
+[node name="SubPersonalityList" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SubPersonalitySection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpeechExampleSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpeechHeader" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SpeechExampleSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="SpeechTitle" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SpeechExampleSection/SpeechHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "말투 예시"
+
+[node name="AddSpeechExampleButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SpeechExampleSection/SpeechHeader"]
+layout_mode = 2
+text = "+ 추가"
+
+[node name="SpeechExampleList" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/PersonalityTab/PersonalityScroll/PersonalityVBox/SpeechExampleSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AppearanceTab" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer"]
+layout_mode = 2
+
+[node name="AppearanceScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="AppearanceVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 14
+
+[node name="AppearanceSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="AppearanceLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/AppearanceSection"]
+layout_mode = 2
+text = "외형"
+
+[node name="AppearanceEdit" type="TextEdit" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/AppearanceSection"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="AppearanceCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/AppearanceSection"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/200"
+
+[node name="EmotionSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="EmotionTitle" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection"]
+layout_mode = 2
+text = "감정 이미지"
+
+[node name="EmotionGrid" type="GridContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection"]
+layout_mode = 2
+columns = 2
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+
+[node name="NeutralBlock" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock"]
+layout_mode = 2
+text = "일반"
+
+[node name="PreviewFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock"]
+layout_mode = 2
+
+[node name="EmotionRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock/PreviewFrame"]
+custom_minimum_size = Vector2(96, 240)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="Buttons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock/Buttons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/NeutralBlock/Buttons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="JoyBlock" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock"]
+layout_mode = 2
+text = "기쁨"
+
+[node name="PreviewFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock"]
+layout_mode = 2
+
+[node name="EmotionRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock/PreviewFrame"]
+custom_minimum_size = Vector2(96, 240)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="Buttons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock/Buttons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/JoyBlock/Buttons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="SadBlock" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock"]
+layout_mode = 2
+text = "슬픔"
+
+[node name="PreviewFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock"]
+layout_mode = 2
+
+[node name="EmotionRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock/PreviewFrame"]
+custom_minimum_size = Vector2(96, 240)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="Buttons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock/Buttons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/SadBlock/Buttons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="AngryBlock" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock"]
+layout_mode = 2
+text = "화남"
+
+[node name="PreviewFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock"]
+layout_mode = 2
+
+[node name="EmotionRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock/PreviewFrame"]
+custom_minimum_size = Vector2(96, 240)
+layout_mode = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="PathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="Buttons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock/Buttons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EmotionSection/EmotionGrid/AngryBlock/Buttons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="EventImageSection" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EventHeader" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EventImageSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="EventTitle" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EventImageSection/EventHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "이벤트 이미지"
+
+[node name="AddEventImageButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EventImageSection/EventHeader"]
+layout_mode = 2
+text = "+ 추가"
+
+[node name="EventImageList" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/Content/RightColumn/TabContainer/AppearanceTab/AppearanceScroll/AppearanceVBox/EventImageSection"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "이미지 선택"
+
+[node name="ImageCropperPopup" parent="." instance=ExtResource("2")]

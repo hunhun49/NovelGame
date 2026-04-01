@@ -1,4 +1,5 @@
 extends Node
+class_name SettingsManagerService
 
 signal settings_loaded(settings: Dictionary)
 signal settings_changed(settings: Dictionary)
@@ -12,7 +13,7 @@ const DEFAULT_SETTINGS := {
 	"last_validation_status": "unconfigured"
 }
 
-var _settings: Dictionary = {}
+var m_settings: Dictionary = {}
 
 
 func _ready() -> void:
@@ -20,7 +21,7 @@ func _ready() -> void:
 
 
 func load_settings() -> void:
-	_settings = DEFAULT_SETTINGS.duplicate(true)
+	m_settings = DEFAULT_SETTINGS.duplicate(true)
 
 	if FileAccess.file_exists(SETTINGS_PATH):
 		var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
@@ -28,7 +29,7 @@ func load_settings() -> void:
 			var parsed: Variant = JSON.parse_string(file.get_as_text())
 			if parsed is Dictionary:
 				for key in parsed.keys():
-					_settings[str(key)] = parsed[key]
+					m_settings[str(key)] = parsed[key]
 
 	_normalize_settings()
 	_write_settings()
@@ -38,7 +39,7 @@ func load_settings() -> void:
 
 func update_settings(partial_settings: Dictionary) -> void:
 	for key in partial_settings.keys():
-		_settings[str(key)] = partial_settings[key]
+		m_settings[str(key)] = partial_settings[key]
 
 	_normalize_settings()
 	_write_settings()
@@ -46,23 +47,23 @@ func update_settings(partial_settings: Dictionary) -> void:
 
 
 func get_settings_snapshot() -> Dictionary:
-	return _settings.duplicate(true)
+	return m_settings.duplicate(true)
 
 
 func get_asset_library_path() -> String:
-	return str(_settings.get("asset_library_path", ""))
+	return str(m_settings.get("asset_library_path", ""))
 
 
 func get_backend_mode() -> String:
-	return str(_settings.get("backend_mode", "http"))
+	return str(m_settings.get("backend_mode", "http"))
 
 
 func get_backend_base_url() -> String:
-	return str(_settings.get("backend_base_url", DEFAULT_SETTINGS["backend_base_url"]))
+	return str(m_settings.get("backend_base_url", DEFAULT_SETTINGS["backend_base_url"]))
 
 
 func uses_stub_backend() -> bool:
-	return bool(_settings.get("use_stub_backend", false))
+	return bool(m_settings.get("use_stub_backend", false))
 
 
 func get_turn_url() -> String:
@@ -73,26 +74,44 @@ func get_health_url() -> String:
 	return "%s/health" % get_backend_base_url()
 
 
+func get_demo_library_path() -> String:
+	return ProjectSettings.globalize_path("res://sample-library")
+
+
+func apply_demo_library() -> void:
+	update_settings({
+		"asset_library_path": get_demo_library_path()
+	})
+
+
+func apply_demo_session() -> void:
+	update_settings({
+		"asset_library_path": get_demo_library_path(),
+		"use_stub_backend": true,
+		"backend_mode": "stub"
+	})
+
+
 func get_last_validation_status() -> String:
-	return str(_settings.get("last_validation_status", "unconfigured"))
+	return str(m_settings.get("last_validation_status", "unconfigured"))
 
 
 func set_last_validation_status(status: String) -> void:
-	if str(_settings.get("last_validation_status", "")) == status:
+	if str(m_settings.get("last_validation_status", "")) == status:
 		return
 
-	_settings["last_validation_status"] = status
+	m_settings["last_validation_status"] = status
 	_write_settings()
 	settings_changed.emit(get_settings_snapshot())
 
 
 func _normalize_settings() -> void:
-	_settings["asset_library_path"] = str(_settings.get("asset_library_path", ""))
-	_settings["last_validation_status"] = str(_settings.get("last_validation_status", "unconfigured"))
-	_settings["backend_base_url"] = _sanitize_base_url(str(_settings.get("backend_base_url", DEFAULT_SETTINGS["backend_base_url"])))
+	m_settings["asset_library_path"] = str(m_settings.get("asset_library_path", ""))
+	m_settings["last_validation_status"] = str(m_settings.get("last_validation_status", "unconfigured"))
+	m_settings["backend_base_url"] = _sanitize_base_url(str(m_settings.get("backend_base_url", DEFAULT_SETTINGS["backend_base_url"])))
 
-	var use_stub_backend := bool(_settings.get("use_stub_backend", false))
-	var backend_mode := str(_settings.get("backend_mode", "http")).to_lower()
+	var use_stub_backend := bool(m_settings.get("use_stub_backend", false))
+	var backend_mode := str(m_settings.get("backend_mode", "http")).to_lower()
 	if backend_mode == "stub":
 		use_stub_backend = true
 
@@ -101,8 +120,8 @@ func _normalize_settings() -> void:
 	else:
 		backend_mode = "http"
 
-	_settings["use_stub_backend"] = use_stub_backend
-	_settings["backend_mode"] = backend_mode
+	m_settings["use_stub_backend"] = use_stub_backend
+	m_settings["backend_mode"] = backend_mode
 
 
 func _sanitize_base_url(raw_value: String) -> String:
@@ -127,4 +146,4 @@ func _write_settings() -> void:
 	if file == null:
 		return
 
-	file.store_string(JSON.stringify(_settings, "\t"))
+	file.store_string(JSON.stringify(m_settings, "\t"))

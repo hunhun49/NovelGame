@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/settings_panel.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/SettingsPanel.gd" id="1"]
 
 [node name="SettingsOverlay" type="Control"]
 visible = false
@@ -24,17 +24,14 @@ color = Color(0, 0, 0, 0.72)
 
 [node name="Panel" type="PanelContainer" parent="Dimmer"]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -340.0
-offset_top = -230.0
-offset_right = 340.0
-offset_bottom = 230.0
+anchors_preset = 15
+anchor_left = 0.1
+anchor_top = 0.08
+anchor_right = 0.9
+anchor_bottom = 0.92
 grow_horizontal = 2
 grow_vertical = 2
+clip_contents = true
 
 [node name="Margin" type="MarginContainer" parent="Dimmer/Panel"]
 layout_mode = 2
@@ -43,79 +40,89 @@ theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
 
-[node name="VBox" type="VBoxContainer" parent="Dimmer/Panel/Margin"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 24
-text = "Runtime Settings"
-
-[node name="LibraryPathEdit" type="LineEdit" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-placeholder_text = "Select an external asset library folder..."
-
-[node name="LibraryButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="ChooseFolderButton" type="Button" parent="Dimmer/Panel/Margin/VBox/LibraryButtons"]
-layout_mode = 2
-text = "Choose Folder"
-
-[node name="ReloadLibraryButton" type="Button" parent="Dimmer/Panel/Margin/VBox/LibraryButtons"]
-layout_mode = 2
-text = "Reload Library"
-
-[node name="LibraryStatusLabel" type="Label" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "Library status will appear here."
-
-[node name="BackendUrlEdit" type="LineEdit" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-placeholder_text = "Backend base URL, e.g. http://127.0.0.1:8000"
-
-[node name="StubCheckBox" type="CheckBox" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-text = "Use stub backend instead of local HTTP"
-
-[node name="BackendButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="CheckBackendButton" type="Button" parent="Dimmer/Panel/Margin/VBox/BackendButtons"]
-layout_mode = 2
-text = "Check Backend"
-
-[node name="BackendModeLabel" type="Label" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "Mode: http"
-
-[node name="BackendStatusLabel" type="Label" parent="Dimmer/Panel/Margin/VBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "Backend status will appear here."
-
-[node name="FooterSpacer" type="Control" parent="Dimmer/Panel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 8)
+[node name="Root" type="VBoxContainer" parent="Dimmer/Panel/Margin"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_constants/separation = 10
 
-[node name="FooterButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox"]
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "실행 설정"
+
+[node name="ContentScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="ContentVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="LibraryPathEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+placeholder_text = "외부 자산 라이브러리 폴더를 선택하세요..."
+
+[node name="LibraryButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ChooseFolderButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox/LibraryButtons"]
+layout_mode = 2
+text = "폴더 선택"
+
+[node name="UseDemoLibraryButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox/LibraryButtons"]
+layout_mode = 2
+text = "데모 라이브러리 사용"
+
+[node name="ReloadLibraryButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox/LibraryButtons"]
+layout_mode = 2
+text = "라이브러리 다시 읽기"
+
+[node name="LibraryStatusLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "라이브러리 상태가 여기에 표시됩니다."
+
+[node name="BackendUrlEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+placeholder_text = "백엔드 기본 URL, 예: http://127.0.0.1:8000"
+
+[node name="StubCheckBox" type="CheckBox" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+text = "로컬 HTTP 대신 stub 백엔드 사용"
+
+[node name="BackendButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="CheckBackendButton" type="Button" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox/BackendButtons"]
+layout_mode = 2
+text = "백엔드 확인"
+
+[node name="BackendModeLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "모드: http"
+
+[node name="BackendStatusLabel" type="Label" parent="Dimmer/Panel/Margin/Root/ContentScroll/ContentVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "백엔드 상태가 여기에 표시됩니다."
+
+[node name="FooterButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root"]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="ApplyButton" type="Button" parent="Dimmer/Panel/Margin/VBox/FooterButtons"]
+[node name="ApplyButton" type="Button" parent="Dimmer/Panel/Margin/Root/FooterButtons"]
 layout_mode = 2
-text = "Apply"
+text = "적용"
 
-[node name="CloseButton" type="Button" parent="Dimmer/Panel/Margin/VBox/FooterButtons"]
+[node name="CloseButton" type="Button" parent="Dimmer/Panel/Margin/Root/FooterButtons"]
 layout_mode = 2
-text = "Close"
+text = "닫기"
 
 [node name="FileDialog" type="FileDialog" parent="."]
-title = "Choose Asset Library Folder"
+title = "자산 라이브러리 폴더 선택"

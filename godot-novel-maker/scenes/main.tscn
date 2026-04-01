@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=7 format=3]
 
-[ext_resource type="Script" path="res://scripts/ui/main_menu.gd" id="1"]
+[ext_resource type="Script" path="res://scripts/ui/MainMenu.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/components/settings_panel.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://scenes/components/save_load_panel.tscn" id="3"]
+[ext_resource type="PackedScene" path="res://scenes/components/story_builder_panel.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/components/character_editor_panel.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/components/story_setup_panel.tscn" id="6"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -28,10 +32,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -220.0
-offset_right = 320.0
-offset_bottom = 220.0
+offset_left = -360.0
+offset_top = -290.0
+offset_right = 360.0
+offset_bottom = 290.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -50,23 +54,23 @@ theme_override_constants/separation = 14
 layout_mode = 2
 horizontal_alignment = 1
 theme_override_font_sizes/font_size = 40
-text = "Infinite Persona"
+text = "노벨게임 메이커"
 
 [node name="Subtitle" type="Label" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
 horizontal_alignment = 1
-text = "Godot local visual novel prototype"
+text = "Godot 기반 로컬 비주얼 노벨 빌더"
 
 [node name="StatusLabel" type="Label" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
 horizontal_alignment = 1
 autowrap_mode = 3
-text = "Preparing project state..."
+text = "프로젝트 상태를 확인하고 있습니다..."
 
 [node name="ConfigurationLabel" type="Label" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
 autowrap_mode = 3
-text = "Configuration summary will appear here."
+text = "라이브러리와 백엔드 상태가 여기에 표시됩니다."
 
 [node name="Spacer" type="Control" parent="CenterPanel/Margin/VBox"]
 custom_minimum_size = Vector2(0, 8)
@@ -74,18 +78,38 @@ layout_mode = 2
 
 [node name="ContinueButton" type="Button" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
-text = "Continue"
+text = "이어하기"
 
-[node name="NewGameButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="LoadButton" type="Button" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
-text = "Start Prototype"
+text = "불러오기"
+
+[node name="StoryStartButton" type="Button" parent="CenterPanel/Margin/VBox"]
+layout_mode = 2
+text = "이야기 시작"
+
+[node name="WorldEditorButton" type="Button" parent="CenterPanel/Margin/VBox"]
+layout_mode = 2
+text = "세계관 만들기"
+
+[node name="CharacterEditorButton" type="Button" parent="CenterPanel/Margin/VBox"]
+layout_mode = 2
+text = "인물 만들기"
 
 [node name="SettingsButton" type="Button" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
-text = "Settings"
+text = "설정"
 
 [node name="QuitButton" type="Button" parent="CenterPanel/Margin/VBox"]
 layout_mode = 2
-text = "Quit"
+text = "종료"
 
 [node name="SettingsPanel" parent="." instance=ExtResource("2")]
+
+[node name="SaveLoadPanel" parent="." instance=ExtResource("3")]
+
+[node name="StoryBuilderPanel" parent="." instance=ExtResource("4")]
+
+[node name="CharacterEditorPanel" parent="." instance=ExtResource("5")]
+
+[node name="StorySetupPanel" parent="." instance=ExtResource("6")]

@@ -17,13 +17,15 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-SettingsManager="*res://autoload/settings_manager.gd"
-AssetLibrary="*res://autoload/asset_library.gd"
-GameState="*res://autoload/game_state.gd"
-SaveManager="*res://autoload/save_manager.gd"
-AiClient="*res://autoload/ai_client.gd"
-NarrativeDirector="*res://autoload/narrative_director.gd"
-SceneRouter="*res://autoload/scene_router.gd"
+settings_manager="*res://classes/SettingsManager.gd"
+asset_library="*res://classes/AssetLibrary.gd"
+story_profile_store="*res://classes/StoryProfileStore.gd"
+game_state="*res://classes/GameState.gd"
+save_manager="*res://classes/SaveManager.gd"
+ai_client="*res://classes/AiClient.gd"
+audio_manager="*res://classes/AudioManager.gd"
+narrative_director="*res://classes/NarrativeDirector.gd"
+scene_router="*res://classes/SceneRouter.gd"
 
 [physics]
 

@@ -1,191 +1,207 @@
-# [기획서 01] 로컬 AI 인지 및 프롬프트 아키텍처
+# [기획 01] Godot 클라이언트와 AI 백엔드 계약
 
-## 1. 시스템 목표
-본 프로젝트의 AI는 단순 대화 봇이 아니라 다음 역할을 동시에 수행합니다.
+## 1. 목적
 
-- **Story Master:** 현재 상황에 맞는 서사 생성
-- **Scene Director:** 어떤 화면 모드와 자산을 사용할지 결정
-- **State Interpreter:** 관계도, 플래그, 장면 전환 조건 반영
+이 문서는 현재 구현된 Godot 클라이언트가 어떤 JSON 계약으로 백엔드와 통신하는지 정리한다.
 
-중요한 전제는 다음과 같습니다.
+중요한 전제:
 
-1. **실시간 생성은 텍스트만 한다.**
-2. **이미지는 생성하지 않고 등록된 자산 중에서 선택한다.**
-3. **출력은 사람이 읽는 텍스트와 엔진이 읽는 구조화 데이터로 나뉜다.**
+- 현재 저장소에는 백엔드 서버 구현이 없다.
+- 따라서 클라이언트 단독 개발 단계에서는 `stub backend` 가 기본 개발 경로다.
+- 실제 서버를 붙일 때는 이 문서의 계약을 그대로 맞춰야 한다.
 
----
+## 2. 현재 클라이언트 역할
 
-## 2. 프롬프트 계층 구조
-모델에는 한 번에 모든 정보를 던지지 않고, 아래 계층으로 나누어 주입합니다.
+Godot 클라이언트는 다음 역할을 맡는다.
 
-### 2.1 System Layer
-- 엔진의 역할 정의
-- 출력 형식 강제
-- 문체 유지 규칙
-- 금지된 출력 형식 명시
+- 플레이어 입력 수집
+- 현재 상태와 최근 대화 정리
+- 현재 상태에 맞는 자산 후보군 필터링
+- 백엔드에 턴 생성 요청 전송
+- 응답 JSON 검증
+- 잘못된 자산 ID에 대해 fallback 적용
+- VN 레이어 렌더링
 
-예시 방향:
-- 소설 문장과 엔진 제어용 필드를 혼동하지 말 것
-- 모르는 자산 ID를 새로 만들지 말 것
-- 장면 전환은 지정된 enum 안에서만 선택할 것
+즉, 백엔드는 자유 텍스트를 아무렇게나 주는 서비스가 아니라 `구조화된 턴 생성기` 여야 한다.
 
-### 2.2 World Layer
-- 세계관 설명
-- 장르 톤
-- 고정 설정
-- 필수 로어
+## 3. 요청 경로
 
-### 2.3 Persona Layer
-- 캐릭터별 말투 정의
-- 관계 거리
-- 선호/금기/습관
-- 감정 반응 패턴
+클라이언트는 설정값 기준으로 아래 경로를 사용한다.
 
-### 2.4 Runtime State Layer
-- 현재 위치
-- 등장 캐릭터
-- 최근 대화
-- 호감도/플래그
-- 허용 가능한 자산 후보 목록
+- Health check: `GET {backend_base_url}/health`
+- Turn request: `POST {backend_base_url}/v1/story/turn`
 
-### 2.5 Output Contract Layer
-- 반드시 JSON으로 출력
-- 필수 키와 enum 목록 제공
-- 문자열 길이와 포맷 제한 명시
+기본값:
 
----
+- `backend_base_url = http://127.0.0.1:8000`
 
-## 3. 컨텍스트 관리 전략
+## 4. 요청 payload
 
-### 3.1 고정 컨텍스트
-- 세계관 문서
-- 캐릭터 원본 설정
-- 작품 전체 문체 규칙
-- 공통 시스템 규칙
+현재 `NarrativeDirector` 가 조립하는 top-level 구조는 다음과 같다.
 
-### 3.2 반고정 컨텍스트
-- 현재 챕터 요약
-- 진행 중인 주요 떡밥
-- 장면별 상태 요약
+```json
+{
+  "persona": {
+    "player_name": "Player",
+    "relationship_scores": {
+      "prototype_heroine": 0
+    }
+  },
+  "world": {
+    "location_id": "prototype_room_night",
+    "rating_lane": "general",
+    "flags": {}
+  },
+  "runtime_state": {
+    "pending_player_input": "hello",
+    "scene_mode": "layered",
+    "current_visual_state": {},
+    "settings_snapshot": {},
+    "library_snapshot": {}
+  },
+  "recent_conversation": [],
+  "asset_candidates": {
+    "backgrounds": [],
+    "sprites": [],
+    "cgs": []
+  }
+}
+```
 
-### 3.3 단기 컨텍스트
-- 최근 대화 6~12턴
-- 방금 발생한 감정 변화
-- 직전 장면 전환 정보
+### 4.1 `persona`
 
-### 3.4 엔진 제공 후보 데이터
-AI에게 전체 자산 라이브러리를 그대로 주지 않습니다. 매 턴 현재 상태에 맞는 후보만 제공합니다.
+- `player_name`
+- `relationship_scores`
+
+현재 구현은 단순하지만, 이후 캐릭터 취향, 플레이어 설정, 톤 선호도까지 넣을 수 있다.
+
+### 4.2 `world`
+
+- `location_id`
+- `rating_lane`
+- `flags`
+
+`rating_lane` 은 현재 자산 필터링과 장면 수위 제한에 동시에 사용된다.
+
+### 4.3 `runtime_state`
+
+- `pending_player_input`
+- `scene_mode`
+- `current_visual_state`
+- `settings_snapshot`
+- `library_snapshot`
+
+백엔드는 여기서 현재 장면이 `layered` 인지 `cg` 인지, 어떤 배경이 이미 깔려 있는지 참고할 수 있다.
+
+### 4.4 `recent_conversation`
+
+최근 대화 10개가 전달된다.  
+각 항목은 `role`, `text`, `metadata` 구조를 가진다.
+
+### 4.5 `asset_candidates`
+
+전체 자산 라이브러리를 보내지 않는다.  
+`AssetLibrary` 가 현재 상태에 맞춰 걸러낸 후보만 전달한다.
 
 예:
-- 배경 후보 3~8개
-- 현재 등장 캐릭터 스프라이트 후보
-- 조건을 만족하는 CG 후보
-- 사용 가능한 BGM/SFX 후보
 
-이렇게 해야 모델이 임의의 자산 ID를 생성할 가능성을 줄일 수 있습니다.
+- 배경: 현재 location 에 맞는 후보 우선
+- 스프라이트: 현재 등장 중인 캐릭터 후보 우선
+- CG: 플래그 조건을 만족한 후보만
 
----
+## 5. 응답 payload
 
-## 4. 구조화 출력 규격
-내부 추론 전문을 받는 대신, 엔진에 필요한 최소한의 의도와 제어 데이터만 받습니다.
+백엔드는 반드시 아래 네 섹션을 모두 포함해야 한다.
 
 ```json
 {
   "content": {
-    "narration": "차가운 밤공기가 옥상 난간을 스치고 지나갔다.",
-    "dialogue": "선배, 오늘은 그냥 못 보내겠어요.",
-    "action": "아리는 한 발 더 가까이 다가선다."
+    "narration": "The room settles into silence.",
+    "dialogue": "I was waiting for you.",
+    "action": "She takes one slow step closer."
   },
   "direction": {
     "scene_mode": "layered",
-    "background_id": "school_rooftop_night",
+    "background_id": "prototype_room_night",
     "character_states": [
       {
-        "character_id": "airi",
-        "sprite_id": "airi_uniform_blush_01",
+        "character_id": "prototype_heroine",
+        "sprite_id": "prototype_heroine_neutral",
         "position": "center"
       }
     ],
-    "cg_id": null,
-    "bgm_id": "night_tension_01",
-    "sfx_id": null,
+    "cg_id": "",
     "transition": "fade",
     "camera_fx": "none"
   },
   "state_update": {
     "relationship_delta": {
-      "airi": 2
+      "prototype_heroine": 1
     },
     "set_flags": [
-      "airi_confession_started"
+      "prototype_session_started"
     ],
-    "content_rating": "mature"
+    "content_rating": "general"
   },
   "memory_hint": {
-    "summary_candidate": "옥상에서 아리가 감정을 더 직접적으로 드러내기 시작했다."
+    "summary_candidate": "The first conversation turn started."
   }
 }
 ```
 
----
+## 6. 현재 검증 규칙
 
-## 5. 출력 설계 원칙
+`AiClient` 는 응답을 바로 렌더링하지 않고 먼저 아래를 검사한다.
 
-### 5.1 텍스트와 제어 데이터를 분리
-- `content`는 플레이어에게 직접 보여줍니다.
-- `direction`은 렌더러와 오디오 시스템이 읽습니다.
-- `state_update`는 게임 상태 관리자가 적용합니다.
+- `content`, `direction`, `state_update`, `memory_hint` 가 모두 dictionary 인가
+- `content.narration`, `dialogue`, `action` 이 문자열인가
+- `direction.scene_mode` 가 `layered` 또는 `cg` 인가
+- `direction.character_states` 가 배열인가
+- 각 character state 의 `position` 이 `left`, `center`, `right` 중 하나인가
+- 각 character state 의 `character_id`, `sprite_id` 가 비어 있지 않은가
+- `state_update.content_rating` 이 존재하는가
 
-### 5.2 추론 전문 저장 금지
-- 장기 저장이 필요한 것은 결과와 요약뿐입니다.
-- 내부 사고흐름 전체를 저장하지 않아도 게임 품질에는 큰 문제가 없습니다.
-- 대신 `memory_hint.summary_candidate` 정도의 짧은 요약 후보만 받습니다.
+이 단계에서 틀리면 클라이언트는 해당 턴을 실패 처리한다.
 
-### 5.3 새 자산 이름 생성 금지
-- AI는 전달받은 후보 ID 중 하나만 선택해야 합니다.
-- 후보에 없는 ID가 나오면 엔진이 무시하고 fallback을 적용합니다.
+## 7. 자산 ID 검증과 fallback
 
----
+스키마가 맞아도 자산 ID 는 다시 검증한다.
 
-## 6. 백엔드 추상화 방향
-클라이언트는 모델 종류에 종속되지 않도록 설계합니다.
+- 알 수 없는 `background_id`: 이전 배경 유지
+- 알 수 없는 `sprite_id`: 해당 슬롯 숨김 또는 중립 fallback 사용
+- 알 수 없는 `cg_id`: `layered` 모드로 강등
+- 현재 rating lane 보다 높은 자산: 사용 불가
+- CG flag 조건 불충족: `layered` 모드로 강등
 
-### 6.1 권장 구조
-- Godot 클라이언트
-- 로컬 `AI Adapter` 계층
-- 실제 생성기는 별도 서비스
+즉, 백엔드는 자산을 "명령"하는 것이 아니라 "제안"한다. 최종 적용은 클라이언트가 검증 후 결정한다.
 
-### 6.2 지원 가능한 연결 형태
-- `localhost` REST
-- `localhost` WebSocket
-- 동일 머신의 Python subprocess
+## 8. stub 모드
 
-### 6.3 백엔드 교체를 위한 최소 공통 계약
-- 입력: prompt payload JSON
-- 출력: 위의 구조화 JSON
-- 선택: 토큰 스트리밍 지원
+백엔드가 아직 없을 때는 `Settings > Use Stub Backend` 로 개발한다.
 
----
+stub 모드 특징:
 
-## 7. 실패 대응
+- `/health` 나 HTTP 서버가 없어도 동작
+- 현재 asset 후보를 기준으로 테스트 응답 생성
+- 입력 텍스트에 `#cg` 가 들어가면 가능한 경우 `cg` 모드 응답 생성
 
-### 7.1 JSON 파싱 실패
-- 1차: repair prompt로 재생성
-- 2차: 마지막 정상 출력 형식을 기준으로 복구
-- 3차: 최소 대사만 표시하고 기본 장면 유지
+이 모드는 클라이언트 UI, 레이어 렌더링, fallback, save/load 를 먼저 검증하기 위한 것이다.
 
-### 7.2 잘못된 자산 ID
-- 후보군에 없는 ID는 무효 처리
-- 기본 배경과 최근 스프라이트를 유지
-- 로그에만 남기고 플레이는 끊지 않음
+## 9. 실제 백엔드 구현 체크리스트
 
-### 7.3 지나치게 긴 출력
-- narration/action/dialogue 각 길이 제한
-- 초과 시 엔진이 요약 또는 잘라내기
+실제 서버를 붙일 때 최소 요구사항:
 
----
+1. `GET /health` 가 200 을 반환해야 한다.
+2. `POST /v1/story/turn` 이 위 스키마로 응답해야 한다.
+3. `state_update.content_rating` 을 항상 채워야 한다.
+4. `scene_mode` 는 `layered | cg` 만 사용해야 한다.
+5. `character_states[].position` 은 `left | center | right` 만 사용해야 한다.
+6. 전달되지 않은 자산 ID 를 즉석 생성하지 말고 `asset_candidates` 안에서만 고르는 것이 좋다.
 
-## 8. 구현 아이디어
-- 초기 버전은 `최근 대화 + 장면 상태 + 자산 후보`만 넣어도 충분합니다.
-- 정교한 품질은 나중에 `장기 기억`, `문체 앵커`, `정합성 검사기`를 붙여 개선합니다.
-- 첫 버전에서는 복잡한 멀티 에이전트 구조보다 **한 개의 서사 생성기 + 한 개의 상태 검증기** 수준이 현실적입니다.
+## 10. 현재 상태 요약
+
+현재 문제의 본질은 `클라이언트 버그` 라기보다 `백엔드 부재` 다.
+
+- 클라이언트는 이미 HTTP 연결 지점을 가지고 있다.
+- 하지만 이 저장소에는 그 지점에 응답해 줄 서버가 없다.
+- 따라서 다음 구현 우선순위는 `Python/FastAPI 로컬 서버 추가` 다.

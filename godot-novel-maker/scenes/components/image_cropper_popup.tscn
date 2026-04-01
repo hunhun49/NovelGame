@@ -1,0 +1,151 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/ImageCropperPopup.gd" id="1"]
+
+[node name="ImageCropperPopup" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+script = ExtResource("1")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.82)
+
+[node name="Panel" type="PanelContainer" parent="Dimmer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.08
+anchor_top = 0.05
+anchor_right = 0.92
+anchor_bottom = 0.95
+grow_horizontal = 2
+grow_vertical = 2
+clip_contents = true
+
+[node name="Margin" type="MarginContainer" parent="Dimmer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="Dimmer/Panel/Margin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox"]
+layout_mode = 2
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/VBox/Header"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "프로필 이미지 자르기"
+
+[node name="BodyScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+clip_contents = true
+
+[node name="Body" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox/BodyScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 18
+
+[node name="CropColumn" type="VBoxContainer" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 10
+
+[node name="CropGuideLabel" type="Label" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/CropColumn"]
+layout_mode = 2
+autowrap_mode = 3
+text = "마우스로 드래그해 위치를 옮기고, 버튼이나 휠로 확대와 축소를 조절할 수 있습니다."
+
+[node name="CropFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/CropColumn"]
+custom_minimum_size = Vector2(320, 480)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="CropArea" type="Control" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/CropColumn/CropFrame"]
+clip_contents = true
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ImageRect" type="TextureRect" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/CropColumn/CropFrame/CropArea"]
+layout_mode = 0
+expand_mode = 1
+stretch_mode = 0
+
+[node name="ControlColumn" type="VBoxContainer" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body"]
+custom_minimum_size = Vector2(240, 0)
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="SourceInfoLabel" type="Label" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn"]
+layout_mode = 2
+autowrap_mode = 3
+text = "원본 정보"
+
+[node name="ZoomRow" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ZoomOutButton" type="Button" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn/ZoomRow"]
+layout_mode = 2
+text = "-"
+
+[node name="ZoomSlider" type="HSlider" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn/ZoomRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ZoomInButton" type="Button" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn/ZoomRow"]
+layout_mode = 2
+text = "+"
+
+[node name="ZoomValueLabel" type="Label" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn"]
+layout_mode = 2
+text = "줌 100%"
+
+[node name="ResetButton" type="Button" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn"]
+layout_mode = 2
+text = "기본 위치로 되돌리기"
+
+[node name="HelpLabel" type="Label" parent="Dimmer/Panel/Margin/VBox/BodyScroll/Body/ControlColumn"]
+layout_mode = 2
+size_flags_vertical = 3
+autowrap_mode = 3
+text = "표시된 프레임 영역이 최종 프로필 이미지로 저장됩니다. 적용하면 1024 x 1536 PNG로 저장됩니다."
+
+[node name="FooterButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/VBox"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="CancelButton" type="Button" parent="Dimmer/Panel/Margin/VBox/FooterButtons"]
+custom_minimum_size = Vector2(96, 44)
+layout_mode = 2
+text = "취소"
+
+[node name="ApplyButton" type="Button" parent="Dimmer/Panel/Margin/VBox/FooterButtons"]
+custom_minimum_size = Vector2(96, 44)
+layout_mode = 2
+text = "적용"

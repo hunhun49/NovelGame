@@ -1,0 +1,337 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/StoryBuilderPanel.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/components/image_cropper_popup.tscn" id="2"]
+
+[node name="StoryBuilderOverlay" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1")
+
+[node name="Dimmer" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.82)
+
+[node name="Panel" type="PanelContainer" parent="Dimmer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_left = 0.03
+anchor_top = 0.04
+anchor_right = 0.97
+anchor_bottom = 0.96
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Margin" type="MarginContainer" parent="Dimmer/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="Root" type="VBoxContainer" parent="Dimmer/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Header" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="HeaderText" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="TitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Header/HeaderText"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "세계관 만들기"
+
+[node name="StatusLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Header/HeaderText"]
+layout_mode = 2
+autowrap_mode = 3
+text = "기존 세계관을 불러오거나 새 세계관을 작성할 수 있습니다."
+
+[node name="ActionButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/Header"]
+layout_mode = 2
+alignment = 2
+theme_override_constants/separation = 8
+
+[node name="ExistingProfileOption" type="OptionButton" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+custom_minimum_size = Vector2(220, 0)
+layout_mode = 2
+
+[node name="NewButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "새로 만들기"
+
+[node name="SaveButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "저장하기"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="CloseButton" type="Button" parent="Dimmer/Panel/Margin/Root/Header/ActionButtons"]
+layout_mode = 2
+text = "닫기"
+
+[node name="Content" type="HSplitContainer" parent="Dimmer/Panel/Margin/Root"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 700
+
+[node name="FormPanel" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/Content"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="FormMargin" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="FormVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProfileTab" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="ProfileScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ProfileVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="ProfileIntro" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "프로필 탭에서는 이미지, 세계관 이름, 한 줄 소개를 작성합니다."
+
+[node name="ProfileImageLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+text = "프로필 이미지 (2:3, 최대 1024 x 1536)"
+
+[node name="ProfileImageFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+custom_minimum_size = Vector2(200, 300)
+layout_mode = 2
+
+[node name="ProfileImageRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ProfileImageFrame"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ProfileImagePathLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "등록된 이미지가 없습니다."
+
+[node name="ProfileImageButtons" type="HBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="UploadButton" type="Button" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ProfileImageButtons"]
+layout_mode = 2
+text = "업로드"
+
+[node name="DeleteButton" type="Button" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox/ProfileImageButtons"]
+layout_mode = 2
+text = "삭제"
+
+[node name="WorldNameLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+text = "세계관 이름 (2~30자, 특수문자/이모지 제외)"
+
+[node name="WorldNameEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+
+[node name="WorldNameCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/30"
+
+[node name="SummaryLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+text = "한 줄 소개 (30자 이내)"
+
+[node name="SummaryEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+
+[node name="SummaryCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/ProfileTab/ProfileScroll/ProfileVBox"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/30"
+
+[node name="WorldSettingTab" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="WorldSettingScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/WorldSettingTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="WorldSettingVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/WorldSettingTab/WorldSettingScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="WorldSettingIntro" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/WorldSettingTab/WorldSettingScroll/WorldSettingVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "세계관, 설정 등 스토리의 자세한 정보를 입력해 주세요."
+
+[node name="WorldSettingEdit" type="TextEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/WorldSettingTab/WorldSettingScroll/WorldSettingVBox"]
+custom_minimum_size = Vector2(0, 360)
+layout_mode = 2
+
+[node name="WorldSettingCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/WorldSettingTab/WorldSettingScroll/WorldSettingVBox"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/3000"
+
+[node name="StartSettingTab" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="StartSettingScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="StartSettingVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="PrologueLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+text = "프롤로그 (1000자 이내)"
+
+[node name="PrologueEdit" type="TextEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+
+[node name="PrologueCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/1000"
+
+[node name="StartSetupNameLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+text = "시작설정 이름"
+
+[node name="StartSetupNameEdit" type="LineEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+
+[node name="InitialSituationLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+text = "시작 상황 (1000자 이내)"
+
+[node name="InitialSituationEdit" type="TextEdit" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+custom_minimum_size = Vector2(0, 220)
+layout_mode = 2
+
+[node name="InitialSituationCountLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/StartSettingTab/StartSettingScroll/StartSettingVBox"]
+layout_mode = 2
+horizontal_alignment = 2
+text = "0/1000"
+
+[node name="PreviewPanel" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/Content"]
+layout_mode = 2
+custom_minimum_size = Vector2(360, 0)
+size_flags_vertical = 3
+
+[node name="PreviewMargin" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 18
+
+[node name="PreviewScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="PreviewVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="PreviewImageFrame" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+custom_minimum_size = Vector2(220, 330)
+layout_mode = 2
+
+[node name="PreviewImageRect" type="TextureRect" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox/PreviewImageFrame"]
+layout_mode = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="PreviewImageHintLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "2:3 비율, 최대 1024 x 1536"
+
+[node name="PreviewTitleLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 26
+autowrap_mode = 3
+text = "세계관 이름"
+
+[node name="PreviewSummaryLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "어떤 스토리인지 설명할 수 있는 간단한 소개가 여기에 표시됩니다."
+
+[node name="PreviewWorldSettingLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "세계관 설정을 입력하면 이곳에 미리보기가 표시됩니다."
+
+[node name="PreviewStartSettingLabel" type="Label" parent="Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "프롤로그와 시작 상황을 작성하면 시작 설정 미리보기가 여기에 표시됩니다."
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "프로필 이미지 선택"
+size = Vector2i(900, 540)
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.png, *.jpg, *.jpeg, *.webp ; ?대?吏 ?뚯씪")
+
+[node name="ImageCropperPopup" parent="." instance=ExtResource("2")]
