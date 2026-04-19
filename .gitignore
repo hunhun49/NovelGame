@@ -16,6 +16,9 @@ out/
 # Python cache
 __pycache__/
 *.pyc
+backend/*.sqlite3
+backend/*.sqlite3-shm
+backend/*.sqlite3-wal
 
 # Godot generated files
 godot-novel-maker/.godot/

@@ -1,0 +1,42 @@
+{
+  "communities": {
+    "0": [
+      "wiki_api_21b137ae34",
+      "wiki_doc_96c47781c6",
+      "wiki_doc_a9684942c5",
+      "wiki_doc_bf19766339",
+      "wiki_index_b8d322cca1",
+      "wiki_ui_391ec0a1f1"
+    ],
+    "1": [
+      "wiki_doc_162aa59e23",
+      "wiki_doc_412b795ff5",
+      "wiki_godot_9015a21619"
+    ]
+  },
+  "cohesion": {
+    "0": 0.8,
+    "1": 1.0
+  },
+  "labels": {
+    "0": "index + 메인 메뉴와 플레이 UI",
+    "1": "Godot 전역 서비스 + 자산 라이브러리와 오디오"
+  },
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `index` connect `index + 메인 메뉴와 플레이 UI` to `Godot 전역 서비스 + 자산 라이브러리와 오디오`?",
+      "why": "High betweenness centrality (0.171) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Godot 전역 서비스` connect `Godot 전역 서비스 + 자산 라이브러리와 오디오` to `index + 메인 메뉴와 플레이 UI`?",
+      "why": "High betweenness centrality (0.080) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `스토리 턴 파이프라인` connect `index + 메인 메뉴와 플레이 UI` to `Godot 전역 서비스 + 자산 라이브러리와 오디오`?",
+      "why": "High betweenness centrality (0.067) - this node is a cross-community bridge."
+    }
+  ]
+}

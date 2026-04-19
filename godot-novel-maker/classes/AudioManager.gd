@@ -40,6 +40,22 @@ func apply_turn_audio_state(audio_state: Dictionary) -> void:
 	_apply_sfx(audio_state)
 
 
+func play_sfx(sfx_id: String) -> void:
+	_apply_sfx({"sfx_id": sfx_id})
+
+
+func wire_button_sounds(root_node: Node) -> void:
+	for child in root_node.get_children():
+		if child is Button:
+			if not child.mouse_entered.is_connected(_on_ui_button_hover):
+				child.mouse_entered.connect(_on_ui_button_hover)
+			if not child.button_down.is_connected(Callable(self, "_on_ui_button_down")):
+				child.button_down.connect(Callable(self, "_on_ui_button_down"))
+			if not child.button_up.is_connected(Callable(self, "_on_ui_button_up")):
+				child.button_up.connect(Callable(self, "_on_ui_button_up"))
+		wire_button_sounds(child)
+
+
 func stop_all() -> void:
 	m_bgm_a.stop()
 	m_bgm_b.stop()
@@ -63,6 +79,9 @@ func _apply_bgm(audio_state: Dictionary, animate: bool) -> void:
 	var stream := asset_library.get_bgm_stream(requested_bgm_id)
 	if stream == null:
 		return
+
+	if stream is AudioStreamWAV:
+		stream.loop_mode = AudioStreamWAV.LOOP_FORWARD
 
 	var target_volume := _resolve_volume_db(str(audio_state.get("volume_profile", "default")))
 	m_inactive_bgm_player.stop()
@@ -125,3 +144,15 @@ func _resolve_volume_db(volume_profile: String) -> float:
 			return -2.0
 		_:
 			return 0.0
+
+
+func _on_ui_button_hover() -> void:
+	play_sfx("button_hover")
+
+
+func _on_ui_button_down() -> void:
+	play_sfx("button_down")
+
+
+func _on_ui_button_up() -> void:
+	play_sfx("button_up")

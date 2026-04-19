@@ -266,6 +266,34 @@ layout_mode = 2
 horizontal_alignment = 2
 text = "0/1000"
 
+[node name="BackgroundsTab" type="MarginContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="BackgroundsScroll" type="ScrollContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BackgroundsVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 10
+
+[node name="BackgroundsIntro" type="Label" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll/BackgroundsVBox"]
+layout_mode = 2
+autowrap_mode = 3
+text = "세계관에 등장할 배경을 등록합니다. 배경 이름과 설명은 AI가 장면에 맞는 배경을 선택하는 데 사용됩니다."
+
+[node name="BackgroundEntriesVBox" type="VBoxContainer" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll/BackgroundsVBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+
+[node name="AddBackgroundButton" type="Button" parent="Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll/BackgroundsVBox"]
+layout_mode = 2
+text = "배경 추가"
+
 [node name="PreviewPanel" type="PanelContainer" parent="Dimmer/Panel/Margin/Root/Content"]
 layout_mode = 2
 custom_minimum_size = Vector2(360, 0)

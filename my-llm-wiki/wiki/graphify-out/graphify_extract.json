@@ -1,0 +1,458 @@
+{
+  "nodes": [
+    {
+      "id": "wiki_godot_9015a21619",
+      "label": "Godot 전역 서비스",
+      "file_type": "document",
+      "source_file": "wiki/Godot 전역 서비스.md",
+      "source_location": "# Godot 전역 서비스",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_index_b8d322cca1",
+      "label": "index",
+      "file_type": "document",
+      "source_file": "wiki/index.md",
+      "source_location": "# index",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_ui_391ec0a1f1",
+      "label": "메인 메뉴와 플레이 UI",
+      "file_type": "document",
+      "source_file": "wiki/메인 메뉴와 플레이 UI.md",
+      "source_location": "# 메인 메뉴와 플레이 UI",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_api_21b137ae34",
+      "label": "백엔드 API와 모델 파이프라인",
+      "file_type": "document",
+      "source_file": "wiki/백엔드 API와 모델 파이프라인.md",
+      "source_location": "# 백엔드 API와 모델 파이프라인",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_doc_96c47781c6",
+      "label": "세이브와 세션 상태",
+      "file_type": "document",
+      "source_file": "wiki/세이브와 세션 상태.md",
+      "source_location": "# 세이브와 세션 상태",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_doc_bf19766339",
+      "label": "스토리 턴 파이프라인",
+      "file_type": "document",
+      "source_file": "wiki/스토리 턴 파이프라인.md",
+      "source_location": "# 스토리 턴 파이프라인",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_doc_412b795ff5",
+      "label": "자산 라이브러리와 오디오",
+      "file_type": "document",
+      "source_file": "wiki/자산 라이브러리와 오디오.md",
+      "source_location": "# 자산 라이브러리와 오디오",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_doc_162aa59e23",
+      "label": "콘텐츠 제작 도구",
+      "file_type": "document",
+      "source_file": "wiki/콘텐츠 제작 도구.md",
+      "source_location": "# 콘텐츠 제작 도구",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "wiki_doc_a9684942c5",
+      "label": "프로젝트 구조와 실행",
+      "file_type": "document",
+      "source_file": "wiki/프로젝트 구조와 실행.md",
+      "source_location": "# 프로젝트 구조와 실행",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "wiki_godot_9015a21619",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/Godot 전역 서비스.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_godot_9015a21619",
+      "target": "wiki_doc_412b795ff5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/Godot 전역 서비스.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_godot_9015a21619",
+      "target": "wiki_doc_96c47781c6",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/Godot 전역 서비스.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_doc_a9684942c5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_ui_391ec0a1f1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_doc_162aa59e23",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_doc_412b795ff5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_doc_96c47781c6",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_index_b8d322cca1",
+      "target": "wiki_api_21b137ae34",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/index.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_ui_391ec0a1f1",
+      "target": "wiki_doc_a9684942c5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/메인 메뉴와 플레이 UI.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_ui_391ec0a1f1",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/메인 메뉴와 플레이 UI.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_ui_391ec0a1f1",
+      "target": "wiki_doc_96c47781c6",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/메인 메뉴와 플레이 UI.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_ui_391ec0a1f1",
+      "target": "wiki_doc_162aa59e23",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/메인 메뉴와 플레이 UI.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_api_21b137ae34",
+      "target": "wiki_doc_a9684942c5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/백엔드 API와 모델 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_api_21b137ae34",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/백엔드 API와 모델 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_api_21b137ae34",
+      "target": "wiki_doc_96c47781c6",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/백엔드 API와 모델 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_96c47781c6",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/세이브와 세션 상태.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_96c47781c6",
+      "target": "wiki_ui_391ec0a1f1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/세이브와 세션 상태.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_96c47781c6",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/세이브와 세션 상태.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_96c47781c6",
+      "target": "wiki_api_21b137ae34",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/세이브와 세션 상태.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_bf19766339",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/스토리 턴 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_bf19766339",
+      "target": "wiki_ui_391ec0a1f1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/스토리 턴 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_bf19766339",
+      "target": "wiki_api_21b137ae34",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/스토리 턴 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_bf19766339",
+      "target": "wiki_doc_96c47781c6",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/스토리 턴 파이프라인.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_412b795ff5",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/자산 라이브러리와 오디오.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_412b795ff5",
+      "target": "wiki_doc_bf19766339",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/자산 라이브러리와 오디오.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_412b795ff5",
+      "target": "wiki_doc_162aa59e23",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/자산 라이브러리와 오디오.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_162aa59e23",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/콘텐츠 제작 도구.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_162aa59e23",
+      "target": "wiki_ui_391ec0a1f1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/콘텐츠 제작 도구.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_162aa59e23",
+      "target": "wiki_doc_412b795ff5",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/콘텐츠 제작 도구.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_a9684942c5",
+      "target": "wiki_godot_9015a21619",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/프로젝트 구조와 실행.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_a9684942c5",
+      "target": "wiki_ui_391ec0a1f1",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/프로젝트 구조와 실행.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    },
+    {
+      "source": "wiki_doc_a9684942c5",
+      "target": "wiki_api_21b137ae34",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "wiki/프로젝트 구조와 실행.md",
+      "source_location": "## Related",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

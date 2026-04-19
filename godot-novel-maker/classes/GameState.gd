@@ -30,6 +30,8 @@ var m_selected_main_character_profiles: Array = []
 var m_selected_player_character_id := ""
 var m_selected_player_character_profile: Dictionary = {}
 var m_dynamic_npc_enabled := true
+var m_session_id := ""
+var m_reset_prompt_cache_on_next_turn := false
 
 
 func _ready() -> void:
@@ -45,6 +47,8 @@ func reset_for_new_game(selected_world: Dictionary = {}, selected_characters: Ar
 	m_selected_main_character_ids = _extract_character_ids(m_selected_main_character_profiles)
 	m_selected_player_character_profile = _normalize_character_profile(selected_player_character)
 	m_selected_player_character_id = str(m_selected_player_character_profile.get("id", ""))
+	m_session_id = _generate_session_id()
+	m_reset_prompt_cache_on_next_turn = false
 	m_player_name = _derive_player_name()
 	m_dynamic_npc_enabled = true
 	m_current_rating_lane = str(m_selected_world_profile.get("default_rating_lane", DEFAULT_RATING_LANE))
@@ -88,7 +92,7 @@ func build_default_visual_state() -> Dictionary:
 
 func build_default_audio_state() -> Dictionary:
 	return {
-		"bgm_id": "",
+		"bgm_id": "StoryMode",
 		"sfx_id": "",
 		"volume_profile": "default"
 	}
@@ -124,6 +128,10 @@ func apply_save_payload(payload: Dictionary, reset_rollback_history_state: bool 
 	m_selected_player_character_id = str(payload.get("selected_player_character_id", ""))
 	m_selected_player_character_profile = _normalize_character_profile(payload.get("selected_player_character_profile", {}))
 	m_dynamic_npc_enabled = bool(payload.get("dynamic_npc_enabled", true))
+	m_session_id = str(payload.get("session_id", "")).strip_edges()
+	if m_session_id.is_empty():
+		m_session_id = _generate_session_id()
+	m_reset_prompt_cache_on_next_turn = true
 
 	if m_selected_world_profile.is_empty() and not m_selected_world_id.is_empty():
 		m_selected_world_profile = _normalize_world_profile(story_profile_store.get_world_by_id(m_selected_world_id))
@@ -176,7 +184,8 @@ func build_save_payload() -> Dictionary:
 		"selected_main_character_profiles": m_selected_main_character_profiles.duplicate(true),
 		"selected_player_character_id": m_selected_player_character_id,
 		"selected_player_character_profile": m_selected_player_character_profile.duplicate(true),
-		"dynamic_npc_enabled": m_dynamic_npc_enabled
+		"dynamic_npc_enabled": m_dynamic_npc_enabled,
+		"session_id": m_session_id
 	}
 
 
@@ -294,6 +303,25 @@ func set_current_scene_name(scene_name: String) -> void:
 	m_current_scene_name = scene_name
 
 
+func get_session_id() -> String:
+	if m_session_id.is_empty():
+		m_session_id = _generate_session_id()
+	return m_session_id
+
+
+func consume_turn_session_payload() -> Dictionary:
+	var payload := {
+		"id": get_session_id(),
+		"reset_prompt_cache": m_reset_prompt_cache_on_next_turn
+	}
+	m_reset_prompt_cache_on_next_turn = false
+	return payload
+
+
+func mark_prompt_cache_reset_pending() -> void:
+	m_reset_prompt_cache_on_next_turn = true
+
+
 func set_flag(flag_name: String, enabled: bool = true) -> void:
 	m_flags[flag_name] = enabled
 
@@ -326,6 +354,10 @@ func rollback_to_previous_snapshot() -> bool:
 	var previous_snapshot: Dictionary = m_rollback_snapshots[m_rollback_snapshots.size() - 1]
 	apply_save_payload(previous_snapshot, false)
 	return true
+
+
+func _generate_session_id() -> String:
+	return "session_%d_%d" % [int(Time.get_unix_time_from_system()), Time.get_ticks_usec()]
 
 
 func _build_initial_relationship_scores(character_profiles: Array) -> Dictionary:

@@ -1,13 +1,13 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene format=3 uid="uid://clg5w3nqtoap"]
 
-[ext_resource type="Script" path="res://scripts/ui/MainMenu.gd" id="1"]
+[ext_resource type="Script" uid="uid://bglaksu3idtpt" path="res://scripts/ui/MainMenu.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/components/settings_panel.tscn" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/components/save_load_panel.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/components/story_builder_panel.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/components/character_editor_panel.tscn" id="5"]
 [ext_resource type="PackedScene" path="res://scenes/components/story_setup_panel.tscn" id="6"]
 
-[node name="MainMenu" type="Control"]
+[node name="MainMenu" type="Control" unique_id=1478701739]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -16,7 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="ColorRect" parent="." unique_id=1880526959]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,91 +25,95 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0705882, 0.0823529, 0.12549, 1)
 
-[node name="CenterPanel" type="PanelContainer" parent="."]
+[node name="CenterPanel" type="PanelContainer" parent="." unique_id=210927568]
 layout_mode = 1
-anchors_preset = 8
+anchors_preset = 13
 anchor_left = 0.5
-anchor_top = 0.5
 anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -360.0
-offset_top = -290.0
-offset_right = 360.0
-offset_bottom = 290.0
+anchor_bottom = 1.0
+offset_left = -273.0
+offset_top = 61.0
+offset_right = 273.0
+offset_bottom = -71.359985
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Margin" type="MarginContainer" parent="CenterPanel"]
+[node name="Margin" type="MarginContainer" parent="CenterPanel" unique_id=163771988]
 layout_mode = 2
 theme_override_constants/margin_left = 28
 theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 28
 
-[node name="VBox" type="VBoxContainer" parent="CenterPanel/Margin"]
+[node name="VBox" type="VBoxContainer" parent="CenterPanel/Margin" unique_id=368640729]
 layout_mode = 2
 theme_override_constants/separation = 14
 
-[node name="Title" type="Label" parent="CenterPanel/Margin/VBox"]
+[node name="Title" type="Label" parent="CenterPanel/Margin/VBox" unique_id=882429222]
 layout_mode = 2
-horizontal_alignment = 1
 theme_override_font_sizes/font_size = 40
 text = "노벨게임 메이커"
-
-[node name="Subtitle" type="Label" parent="CenterPanel/Margin/VBox"]
-layout_mode = 2
 horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="CenterPanel/Margin/VBox" unique_id=1286161087]
+layout_mode = 2
 text = "Godot 기반 로컬 비주얼 노벨 빌더"
+horizontal_alignment = 1
 
-[node name="StatusLabel" type="Label" parent="CenterPanel/Margin/VBox"]
+[node name="StatusLabel" type="Label" parent="CenterPanel/Margin/VBox" unique_id=1935154469]
 layout_mode = 2
+text = "프로젝트 상태를 확인하고 있습니다..."
 horizontal_alignment = 1
 autowrap_mode = 3
-text = "프로젝트 상태를 확인하고 있습니다..."
 
-[node name="ConfigurationLabel" type="Label" parent="CenterPanel/Margin/VBox"]
+[node name="ConfigurationLabel" type="Label" parent="CenterPanel/Margin/VBox" unique_id=1059652201]
 layout_mode = 2
-autowrap_mode = 3
 text = "라이브러리와 백엔드 상태가 여기에 표시됩니다."
+autowrap_mode = 3
 
-[node name="Spacer" type="Control" parent="CenterPanel/Margin/VBox"]
+[node name="Spacer" type="Control" parent="CenterPanel/Margin/VBox" unique_id=150134585]
 custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 
-[node name="ContinueButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="ContinueButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=1237794417]
 layout_mode = 2
 text = "이어하기"
 
-[node name="LoadButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="LoadButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=376827986]
 layout_mode = 2
 text = "불러오기"
 
-[node name="StoryStartButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="StoryStartButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=1724005097]
 layout_mode = 2
 text = "이야기 시작"
 
-[node name="WorldEditorButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="WorldEditorButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=638328874]
 layout_mode = 2
 text = "세계관 만들기"
 
-[node name="CharacterEditorButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="CharacterEditorButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=155465489]
 layout_mode = 2
 text = "인물 만들기"
 
-[node name="SettingsButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="SettingsButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=335659457]
 layout_mode = 2
 text = "설정"
 
-[node name="QuitButton" type="Button" parent="CenterPanel/Margin/VBox"]
+[node name="QuitButton" type="Button" parent="CenterPanel/Margin/VBox" unique_id=2051773699]
 layout_mode = 2
 text = "종료"
 
-[node name="SettingsPanel" parent="." instance=ExtResource("2")]
+[node name="SettingsPanel" parent="." unique_id=1729101284 instance=ExtResource("2")]
+layout_mode = 1
 
-[node name="SaveLoadPanel" parent="." instance=ExtResource("3")]
+[node name="SaveLoadPanel" parent="." unique_id=2123084739 instance=ExtResource("3")]
+layout_mode = 1
 
-[node name="StoryBuilderPanel" parent="." instance=ExtResource("4")]
+[node name="StoryBuilderPanel" parent="." unique_id=667449871 instance=ExtResource("4")]
+layout_mode = 1
 
-[node name="CharacterEditorPanel" parent="." instance=ExtResource("5")]
+[node name="CharacterEditorPanel" parent="." unique_id=1619332889 instance=ExtResource("5")]
+layout_mode = 1
 
-[node name="StorySetupPanel" parent="." instance=ExtResource("6")]
+[node name="StorySetupPanel" parent="." unique_id=1072987324 instance=ExtResource("6")]
+layout_mode = 1

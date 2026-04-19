@@ -39,6 +39,8 @@ func _ready() -> void:
 	story_profile_store.content_changed.connect(_on_runtime_changed)
 	ai_client.request_backend_health_check()
 	_refresh_menu_state()
+	audio_manager.wire_button_sounds(self)
+	audio_manager.sync_audio_state({"bgm_id": "MainMenu"})
 
 
 func _refresh_menu_state() -> void:

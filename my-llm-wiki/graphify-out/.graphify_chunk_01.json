@@ -1,0 +1,1120 @@
+{
+  "nodes": [
+    {
+      "id": "prompt_cognition_arch_backend_api_contract",
+      "label": "Backend API Contract",
+      "file_type": "document",
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 1. ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompt_cognition_arch_structured_turn_generation",
+      "label": "Structured Turn Generation",
+      "file_type": "document",
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 2. ?? ????? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompt_cognition_arch_response_schema_validation",
+      "label": "Response Schema Validation",
+      "file_type": "document",
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 6. ?? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompt_cognition_arch_asset_id_fallback",
+      "label": "Asset ID Fallback",
+      "file_type": "document",
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 7. ?? ID ??? fallback",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "prompt_cognition_arch_stub_backend_mode",
+      "label": "Stub Backend Mode",
+      "file_type": "document",
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 8. stub ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dynamic_voice_speech_profile",
+      "label": "Structured Speech Profile",
+      "file_type": "document",
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 3. ??? ?? ??? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dynamic_voice_relationship_modes",
+      "label": "Relationship Language Stages",
+      "file_type": "document",
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 5. ?? ??? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dynamic_voice_emotion_shift",
+      "label": "Emotion-Driven Speech Shift",
+      "file_type": "document",
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 4. ??? ?? ?? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "dynamic_voice_style_anchor_rationale",
+      "label": "Style Anchor Rationale",
+      "file_type": "document",
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 8. ???? ?? ????",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_orch_asset_library",
+      "label": "Asset Library Manifest",
+      "file_type": "document",
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 3. ?? manifest ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_orch_candidate_filtering",
+      "label": "Candidate Filtering Pipeline",
+      "file_type": "document",
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 5. ??? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_orch_layered_mode",
+      "label": "Layered Scene Mode",
+      "file_type": "document",
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 6.1 Layered",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_orch_cg_mode",
+      "label": "CG Scene Mode",
+      "file_type": "document",
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 6.2 CG",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_orch_candidate_restriction_rationale",
+      "label": "Filtered Candidate Rationale",
+      "file_type": "document",
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 5. ??? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "memory_system_memory_hierarchy",
+      "label": "Memory Hierarchy",
+      "file_type": "document",
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 2. ?? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "memory_system_continuity_check",
+      "label": "Continuity Check",
+      "file_type": "document",
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 4.2 Continuity Check",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "memory_system_state_based_branching",
+      "label": "State-Based Branching",
+      "file_type": "document",
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 6. ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_infra_local_backend_architecture",
+      "label": "Local Backend Architecture",
+      "file_type": "document",
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 3. ?? ????",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_infra_health_endpoint",
+      "label": "Health Endpoint",
+      "file_type": "document",
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 5. Health check ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "web_infra_story_turn_endpoint",
+      "label": "Story Turn Endpoint",
+      "file_type": "document",
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 6. Turn request ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "visual_layer_vn_layer_stack",
+      "label": "VN Layer Stack",
+      "file_type": "document",
+      "source_file": "raw/06_Visual_Layer_System.md",
+      "source_location": "## 2. ?? ? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "sound_orch_audio_orchestration",
+      "label": "Audio Candidate Orchestration",
+      "file_type": "document",
+      "source_file": "raw/07_Sound_Orchestration.md",
+      "source_location": "## 8. ?? ????",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "save_history_vn_state_snapshot",
+      "label": "VN State Snapshot Save",
+      "file_type": "document",
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 1. ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "save_history_settings_save_separation",
+      "label": "Settings and Save Separation",
+      "file_type": "document",
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 5. ??? ??? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "save_history_snapshot_rationale",
+      "label": "Resume State Rationale",
+      "file_type": "document",
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 7. ?? ??? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "safety_guardrails_rating_lane",
+      "label": "Rating Lane",
+      "file_type": "document",
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 2. ?? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "safety_guardrails_safety_policy",
+      "label": "Safety Guardrails",
+      "file_type": "document",
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 3. ?? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "safety_guardrails_asset_lane_separation",
+      "label": "General and Adult Asset Separation",
+      "file_type": "document",
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 7. ??? / ??? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "safety_guardrails_player_toggles",
+      "label": "Player Content Toggles",
+      "file_type": "document",
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 6. ???? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "safety_guardrails_local_freedom_rationale",
+      "label": "Local Stack Freedom Rationale",
+      "file_type": "document",
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 9. ?? ??? ?? ???",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ollama_backend_fastapi_server",
+      "label": "FastAPI Local Server",
+      "file_type": "document",
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 1. ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ollama_backend_ollama_stack",
+      "label": "Ollama Backend",
+      "file_type": "document",
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 1. ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ollama_backend_qwen_profile",
+      "label": "Qwen 2.5 14B Profile",
+      "file_type": "document",
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 4. ?? ?? ???",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ollama_backend_schema_repair",
+      "label": "Schema Repair",
+      "file_type": "document",
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 2. ? Godot ?? ???? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "ollama_backend_backend_separation_rationale",
+      "label": "Backend Separation Rationale",
+      "file_type": "document",
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 2. ? Godot ?? ???? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vn_dialog_ui_vn_dialog_ui",
+      "label": "VN Dialogue UI",
+      "file_type": "document",
+      "source_file": "raw/11_VN_Dialog_Scene.md",
+      "source_location": "## 2. ? ?? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vn_dialog_ui_typing_effect",
+      "label": "Typing Effect",
+      "file_type": "document",
+      "source_file": "raw/11_VN_Dialog_Scene.md",
+      "source_location": "## 3. ??? ???",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "vn_dialog_ui_input_lock",
+      "label": "Input Lock During Typing",
+      "file_type": "document",
+      "source_file": "raw/11_VN_Dialog_Scene.md",
+      "source_location": "## 4. ?? ?? / ??? ??",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "local_ai_server_prompt_builder",
+      "label": "Prompt Builder",
+      "file_type": "document",
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "### Step 4: Prompt Builder",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    },
+    {
+      "id": "local_ai_server_vector_memory",
+      "label": "Vector Memory Backend",
+      "file_type": "document",
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "### Step 5: Memory / Step 6: Vector DB",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null
+    }
+  ],
+  "edges": [
+    {
+      "source": "prompt_cognition_arch_backend_api_contract",
+      "target": "prompt_cognition_arch_structured_turn_generation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 2. ?? ????? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_backend_api_contract",
+      "target": "prompt_cognition_arch_response_schema_validation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 6. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_backend_api_contract",
+      "target": "prompt_cognition_arch_asset_id_fallback",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 7. ?? ID ??? fallback",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "web_infra_story_turn_endpoint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 3. ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "visual_orch_candidate_filtering",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "### 4.5 asset_candidates",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "memory_system_memory_hierarchy",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 5. ?? payload",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "safety_guardrails_rating_lane",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "### 4.2 world / ## 5. ?? payload",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "visual_orch_layered_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "### 4.3 runtime_state",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "visual_orch_cg_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 5. ?? payload",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_structured_turn_generation",
+      "target": "save_history_vn_state_snapshot",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.82,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 2. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_response_schema_validation",
+      "target": "web_infra_story_turn_endpoint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 6. Turn request ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_asset_id_fallback",
+      "target": "visual_orch_asset_library",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.84,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 4. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_asset_id_fallback",
+      "target": "visual_orch_layered_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 7. fallback ??",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_asset_id_fallback",
+      "target": "safety_guardrails_rating_lane",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/01_Prompt_Congnition_Arch.md",
+      "source_location": "## 7. ?? ID ??? fallback",
+      "weight": 1.0
+    },
+    {
+      "source": "prompt_cognition_arch_stub_backend_mode",
+      "target": "web_infra_local_backend_architecture",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.67,
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 2. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "dynamic_voice_speech_profile",
+      "target": "dynamic_voice_relationship_modes",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 5. ?? ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "dynamic_voice_speech_profile",
+      "target": "dynamic_voice_emotion_shift",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 4. ??? ?? ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "dynamic_voice_style_anchor_rationale",
+      "target": "dynamic_voice_speech_profile",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 8. ???? ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "dynamic_voice_relationship_modes",
+      "target": "memory_system_state_based_branching",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.79,
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 6. ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "dynamic_voice_speech_profile",
+      "target": "memory_system_memory_hierarchy",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.72,
+      "source_file": "raw/02_Dynamic_Voice_Design.md",
+      "source_location": "## 8. ???? ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_system_memory_hierarchy",
+      "target": "memory_system_continuity_check",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 4.2 Continuity Check",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_system_memory_hierarchy",
+      "target": "memory_system_state_based_branching",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/04_Narrative_Memory_System.md",
+      "source_location": "## 6. ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "memory_system_memory_hierarchy",
+      "target": "save_history_vn_state_snapshot",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 2. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "save_history_snapshot_rationale",
+      "target": "save_history_vn_state_snapshot",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 7. ?? ??? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "save_history_vn_state_snapshot",
+      "target": "save_history_settings_save_separation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 5. ??? ??? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "save_history_vn_state_snapshot",
+      "target": "safety_guardrails_rating_lane",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 4. payload ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_asset_library",
+      "target": "visual_orch_candidate_filtering",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 5. ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_candidate_restriction_rationale",
+      "target": "visual_orch_candidate_filtering",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 5. ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_candidate_filtering",
+      "target": "visual_orch_layered_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 6.1 Layered",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_candidate_filtering",
+      "target": "visual_orch_cg_mode",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 6.2 CG",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_candidate_filtering",
+      "target": "safety_guardrails_rating_lane",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/03_Visual_Orchestration.md",
+      "source_location": "## 5. ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_layered_mode",
+      "target": "visual_layer_vn_layer_stack",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/06_Visual_Layer_System.md",
+      "source_location": "## 4. ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_orch_cg_mode",
+      "target": "visual_layer_vn_layer_stack",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/06_Visual_Layer_System.md",
+      "source_location": "## 4. ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_layer_vn_layer_stack",
+      "target": "vn_dialog_ui_vn_dialog_ui",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/06_Visual_Layer_System.md",
+      "source_location": "## 3.5 UiLayer",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_layer_vn_layer_stack",
+      "target": "save_history_vn_state_snapshot",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.83,
+      "source_file": "raw/08_Save_History_Management.md",
+      "source_location": "## 4. payload ??",
+      "weight": 1.0
+    },
+    {
+      "source": "visual_layer_vn_layer_stack",
+      "target": "prompt_cognition_arch_asset_id_fallback",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.74,
+      "source_file": "raw/06_Visual_Layer_System.md",
+      "source_location": "## 8. ?? fallback ??",
+      "weight": 1.0
+    },
+    {
+      "source": "vn_dialog_ui_vn_dialog_ui",
+      "target": "vn_dialog_ui_typing_effect",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/11_VN_Dialog_Scene.md",
+      "source_location": "## 3. ??? ???",
+      "weight": 1.0
+    },
+    {
+      "source": "vn_dialog_ui_typing_effect",
+      "target": "vn_dialog_ui_input_lock",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/11_VN_Dialog_Scene.md",
+      "source_location": "## 4. ?? ?? / ??? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "sound_orch_audio_orchestration",
+      "target": "visual_orch_candidate_filtering",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.81,
+      "source_file": "raw/07_Sound_Orchestration.md",
+      "source_location": "## 8. ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "sound_orch_audio_orchestration",
+      "target": "safety_guardrails_rating_lane",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/07_Sound_Orchestration.md",
+      "source_location": "## 6. ???/?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "sound_orch_audio_orchestration",
+      "target": "web_infra_story_turn_endpoint",
+      "relation": "references",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.22,
+      "source_file": "raw/07_Sound_Orchestration.md",
+      "source_location": "## 4. AI ?? ??? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_rating_lane",
+      "target": "safety_guardrails_safety_policy",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 2. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_rating_lane",
+      "target": "safety_guardrails_asset_lane_separation",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 7. ??? / ??? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_rating_lane",
+      "target": "safety_guardrails_player_toggles",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 6. ???? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_local_freedom_rationale",
+      "target": "safety_guardrails_safety_policy",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 9. ?? ??? ?? ???",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_asset_lane_separation",
+      "target": "visual_orch_asset_library",
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.84,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 4. ?? ????? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "safety_guardrails_player_toggles",
+      "target": "save_history_settings_save_separation",
+      "relation": "shares_data_with",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.28,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md",
+      "source_location": "## 6. ???? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "web_infra_local_backend_architecture",
+      "target": "web_infra_health_endpoint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 3. ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "web_infra_local_backend_architecture",
+      "target": "web_infra_story_turn_endpoint",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 3. ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "web_infra_health_endpoint",
+      "target": "web_infra_story_turn_endpoint",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/05_Web_Infra_Optimization.md",
+      "source_location": "## 3. ?? ????",
+      "weight": 1.0
+    },
+    {
+      "source": "web_infra_local_backend_architecture",
+      "target": "ollama_backend_fastapi_server",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 1. ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_fastapi_server",
+      "target": "ollama_backend_ollama_stack",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 1. ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_ollama_stack",
+      "target": "ollama_backend_qwen_profile",
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 3. ?? ?? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_ollama_stack",
+      "target": "ollama_backend_schema_repair",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 2. ? Godot ?? ???? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_backend_separation_rationale",
+      "target": "web_infra_local_backend_architecture",
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 2. ? Godot ?? ???? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_schema_repair",
+      "target": "prompt_cognition_arch_response_schema_validation",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.88,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 2. ? Godot ?? ???? ??",
+      "weight": 1.0
+    },
+    {
+      "source": "ollama_backend_fastapi_server",
+      "target": "prompt_cognition_arch_backend_api_contract",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.89,
+      "source_file": "raw/10_Ollama_Local_Backend.md",
+      "source_location": "## 1. ??",
+      "weight": 1.0
+    },
+    {
+      "source": "local_ai_server_prompt_builder",
+      "target": "local_ai_server_vector_memory",
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "### Step 4: Prompt Builder / Step 5-6: Memory, Vector DB",
+      "weight": 1.0
+    },
+    {
+      "source": "local_ai_server_prompt_builder",
+      "target": "memory_system_memory_hierarchy",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.76,
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "### Step 5: Memory",
+      "weight": 1.0
+    },
+    {
+      "source": "local_ai_server_vector_memory",
+      "target": "web_infra_local_backend_architecture",
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.68,
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "## Goal",
+      "weight": 1.0
+    },
+    {
+      "source": "local_ai_server_prompt_builder",
+      "target": "ollama_backend_fastapi_server",
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.71,
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "## Goal",
+      "weight": 1.0
+    },
+    {
+      "source": "local_ai_server_vector_memory",
+      "target": "memory_system_memory_hierarchy",
+      "relation": "shares_data_with",
+      "confidence": "AMBIGUOUS",
+      "confidence_score": 0.24,
+      "source_file": "raw/local_ai_server_prompt.md",
+      "source_location": "### Step 6: Vector DB",
+      "weight": 1.0
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "backend_turn_generation_stack",
+      "label": "Backend Turn Generation Stack",
+      "nodes": [
+        "prompt_cognition_arch_backend_api_contract",
+        "prompt_cognition_arch_structured_turn_generation",
+        "web_infra_local_backend_architecture",
+        "ollama_backend_fastapi_server",
+        "ollama_backend_ollama_stack",
+        "ollama_backend_schema_repair"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.89,
+      "source_file": "raw/10_Ollama_Local_Backend.md"
+    },
+    {
+      "id": "vn_runtime_presentation_stack",
+      "label": "VN Runtime Presentation Stack",
+      "nodes": [
+        "visual_orch_asset_library",
+        "visual_orch_candidate_filtering",
+        "visual_orch_layered_mode",
+        "visual_orch_cg_mode",
+        "visual_layer_vn_layer_stack",
+        "vn_dialog_ui_vn_dialog_ui",
+        "vn_dialog_ui_typing_effect",
+        "sound_orch_audio_orchestration"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.86,
+      "source_file": "raw/06_Visual_Layer_System.md"
+    },
+    {
+      "id": "content_lane_governance",
+      "label": "Content Lane Governance",
+      "nodes": [
+        "safety_guardrails_rating_lane",
+        "safety_guardrails_safety_policy",
+        "safety_guardrails_asset_lane_separation",
+        "safety_guardrails_player_toggles",
+        "visual_orch_candidate_filtering",
+        "sound_orch_audio_orchestration"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.84,
+      "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md"
+    }
+  ],
+  "input_tokens": 0,
+  "output_tokens": 0
+}

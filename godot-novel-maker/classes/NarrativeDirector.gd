@@ -5,6 +5,13 @@ signal turn_started()
 signal render_state_changed(render_state: Dictionary)
 signal turn_failed(error_state: Dictionary)
 
+const MAX_TURN_RECENT_ITEMS := 4
+const MAX_TURN_BACKGROUND_CANDIDATES := 3
+const MAX_TURN_SPRITE_CANDIDATES := 4
+const MAX_TURN_CG_CANDIDATES := 2
+const MAX_TURN_BGM_CANDIDATES := 2
+const MAX_TURN_SFX_CANDIDATES := 3
+
 var m_turn_in_progress := false
 var m_pending_player_input := ""
 
@@ -56,16 +63,31 @@ func _build_turn_request(player_input: String) -> Dictionary:
 		},
 		"runtime_state": {
 			"pending_player_input": player_input,
-			"scene_mode": str(game_state.m_current_visual_state.get("scene_mode", "layered")),
-			"current_visual_state": game_state.m_current_visual_state.duplicate(true),
-			"current_audio_state": game_state.m_current_audio_state.duplicate(true),
-			"settings_snapshot": game_state.m_settings_snapshot.duplicate(true),
-			"library_snapshot": game_state.m_library_snapshot.duplicate(true),
-			"story_setup": game_state.build_story_setup_snapshot()
+			"scene_mode": str(game_state.m_current_visual_state.get("scene_mode", "layered"))
 		},
-		"recent_conversation": game_state.get_recent_conversation(10),
-		"asset_candidates": asset_library.build_candidate_bundle(game_state)
+		"session": game_state.consume_turn_session_payload(),
+		"recent_conversation": game_state.get_recent_conversation(MAX_TURN_RECENT_ITEMS),
+		"asset_candidates": _build_trimmed_asset_candidates()
 	}
+
+
+func _build_trimmed_asset_candidates() -> Dictionary:
+	var candidate_bundle := asset_library.build_candidate_bundle(game_state)
+	return {
+		"backgrounds": _limit_array(candidate_bundle.get("backgrounds", []), MAX_TURN_BACKGROUND_CANDIDATES),
+		"sprites": _limit_array(candidate_bundle.get("sprites", []), MAX_TURN_SPRITE_CANDIDATES),
+		"cgs": _limit_array(candidate_bundle.get("cgs", []), MAX_TURN_CG_CANDIDATES),
+		"bgms": _limit_array(candidate_bundle.get("bgms", []), MAX_TURN_BGM_CANDIDATES),
+		"sfxs": _limit_array(candidate_bundle.get("sfxs", []), MAX_TURN_SFX_CANDIDATES)
+	}
+
+
+func _limit_array(raw_value: Variant, max_items: int) -> Array:
+	if not (raw_value is Array):
+		return []
+	if max_items <= 0:
+		return []
+	return (raw_value as Array).slice(0, max_items)
 
 
 func _on_turn_succeeded(payload: Dictionary) -> void:
@@ -112,17 +134,23 @@ func _apply_turn_payload(player_input: String, payload: Dictionary) -> void:
 	var resolved_visuals := _resolve_visual_state(direction, next_rating_lane)
 	var resolved_audio := _resolve_audio_state(audio, next_rating_lane)
 	var fallback_messages: Array = resolved_visuals.get("fallback_messages", []).duplicate(true)
+	var resolved_visual_state := _ensure_primary_dialogue_character_visible(
+		resolved_visuals.get("visual_state", game_state.build_default_visual_state()),
+		next_rating_lane,
+		fallback_messages
+	)
+	resolved_visuals["visual_state"] = resolved_visual_state
 	for message in resolved_audio.get("fallback_messages", []):
 		fallback_messages.append(message)
 
 	game_state.m_current_content = {
 		"narration": str(content.get("narration", "")),
-		"speaker_name": _derive_speaker_name(resolved_visuals.get("visual_state", {})),
+		"speaker_name": _derive_speaker_name(resolved_visual_state),
 		"dialogue": str(content.get("dialogue", "")),
 		"action": str(content.get("action", ""))
 	}
 
-	game_state.m_current_visual_state = resolved_visuals.get("visual_state", game_state.build_default_visual_state())
+	game_state.m_current_visual_state = resolved_visual_state
 	game_state.m_current_audio_state = resolved_audio.get("audio_state", game_state.build_default_audio_state())
 	game_state.m_last_fallback_messages = fallback_messages
 	game_state.m_last_status_message = _merge_status_messages([
@@ -274,9 +302,106 @@ func _resolve_character_slots(raw_character_states: Array, rating_lane: String, 
 	return resolved_slots
 
 
+func _get_primary_dialogue_character_id() -> String:
+	for raw_character_id in game_state.m_selected_main_character_ids:
+		var character_id := str(raw_character_id).strip_edges()
+		if not character_id.is_empty():
+			return character_id
+
+	var player_character_id := str(game_state.m_selected_player_character_id).strip_edges()
+	if not player_character_id.is_empty():
+		return player_character_id
+	return ""
+
+
+func _find_character_slot(character_slots: Dictionary, character_id: String) -> String:
+	var clean_character_id := character_id.strip_edges()
+	if clean_character_id.is_empty():
+		return ""
+
+	for slot_name in game_state.SLOT_NAMES:
+		var slot_state: Variant = character_slots.get(slot_name, {})
+		if not (slot_state is Dictionary):
+			continue
+		if str((slot_state as Dictionary).get("character_id", "")).strip_edges() == clean_character_id:
+			return slot_name
+
+	return ""
+
+
+func _find_first_empty_character_slot(character_slots: Dictionary, preferred_slots: Array = ["left", "right"]) -> String:
+	for raw_slot_name in preferred_slots:
+		var slot_name := str(raw_slot_name)
+		var slot_state: Variant = character_slots.get(slot_name, {})
+		if not (slot_state is Dictionary) or (slot_state as Dictionary).is_empty():
+			return slot_name
+	return ""
+
+
+func _ensure_primary_dialogue_character_visible(visual_state: Dictionary, rating_lane: String, fallback_messages: Array) -> Dictionary:
+	var normalized_visual_state := visual_state.duplicate(true)
+	if str(normalized_visual_state.get("scene_mode", "layered")) != "layered":
+		return normalized_visual_state
+
+	var primary_character_id := _get_primary_dialogue_character_id()
+	if primary_character_id.is_empty():
+		return normalized_visual_state
+
+	var raw_character_slots: Variant = normalized_visual_state.get("character_slots", {})
+	var character_slots := game_state.build_empty_character_slots()
+	if raw_character_slots is Dictionary:
+		character_slots = (raw_character_slots as Dictionary).duplicate(true)
+
+	var current_slot := _find_character_slot(character_slots, primary_character_id)
+	if current_slot == "center":
+		normalized_visual_state["character_slots"] = character_slots
+		return normalized_visual_state
+
+	if not current_slot.is_empty():
+		var speaker_state := (character_slots.get(current_slot, {}) as Dictionary).duplicate(true)
+		if not speaker_state.is_empty():
+			speaker_state["position"] = "center"
+			var center_state: Variant = character_slots.get("center", {})
+			if center_state is Dictionary and not (center_state as Dictionary).is_empty():
+				var moved_center := (center_state as Dictionary).duplicate(true)
+				moved_center["position"] = current_slot
+				character_slots[current_slot] = moved_center
+			else:
+				character_slots[current_slot] = {}
+			character_slots["center"] = speaker_state
+
+		normalized_visual_state["character_slots"] = character_slots
+		return normalized_visual_state
+
+	var speaker_result := asset_library.resolve_sprite_state({
+		"character_id": primary_character_id,
+		"position": "center"
+	}, rating_lane)
+	if bool(speaker_result.get("ok", false)):
+		var center_state: Variant = character_slots.get("center", {})
+		if center_state is Dictionary and not (center_state as Dictionary).is_empty():
+			var empty_slot := _find_first_empty_character_slot(character_slots)
+			if not empty_slot.is_empty():
+				var moved_center := (center_state as Dictionary).duplicate(true)
+				moved_center["position"] = empty_slot
+				character_slots[empty_slot] = moved_center
+
+		character_slots["center"] = (speaker_result.get("sprite_state", {}) as Dictionary).duplicate(true)
+		var message := str(speaker_result.get("message", ""))
+		if not message.is_empty():
+			fallback_messages.append(message)
+
+	normalized_visual_state["character_slots"] = character_slots
+	return normalized_visual_state
+
+
 func _derive_speaker_name(visual_state: Dictionary) -> String:
 	var character_slots: Dictionary = visual_state.get("character_slots", {})
-	for slot_name in game_state.SLOT_NAMES:
+	var primary_character_id := _get_primary_dialogue_character_id()
+	if not primary_character_id.is_empty() and not _find_character_slot(character_slots, primary_character_id).is_empty():
+		return game_state.get_character_display_name(primary_character_id)
+
+	for slot_name in ["center", "left", "right"]:
 		var slot_state: Variant = character_slots.get(slot_name, {})
 		if slot_state is Dictionary:
 			var character_id := str(slot_state.get("character_id", "")).strip_edges()

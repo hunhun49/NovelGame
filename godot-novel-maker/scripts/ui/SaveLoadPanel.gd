@@ -19,6 +19,7 @@ var m_mode := LOAD_MODE
 func _ready() -> void:
 	visible = false
 	m_close_button.pressed.connect(_on_close_pressed)
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel(panel_mode: String) -> void:
@@ -67,6 +68,7 @@ func _rebuild_slots() -> void:
 		row.add_child(button)
 		row.add_child(summary_label)
 		m_slots_container.add_child(row)
+		audio_manager.wire_button_sounds(row)
 
 
 func _on_slot_pressed(slot_id: int) -> void:

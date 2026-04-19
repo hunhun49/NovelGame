@@ -49,6 +49,7 @@ func _ready() -> void:
 	m_crop_area.gui_input.connect(_on_crop_area_gui_input)
 	m_crop_area.resized.connect(_on_crop_area_resized)
 	m_image_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	audio_manager.wire_button_sounds(self)
 
 
 func open_with_image(p_image: Image, p_source_path: String, p_target_width: int = DEFAULT_TARGET_WIDTH, p_target_height: int = DEFAULT_TARGET_HEIGHT) -> void:

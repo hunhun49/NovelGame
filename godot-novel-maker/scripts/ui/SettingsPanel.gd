@@ -36,6 +36,7 @@ func _ready() -> void:
 	_refresh_from_settings(settings_manager.get_settings_snapshot())
 	_refresh_library_status()
 	_refresh_backend_status(ai_client.get_last_health_state())
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel() -> void:

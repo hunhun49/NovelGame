@@ -46,6 +46,7 @@ func _ready() -> void:
 	story_profile_store.worlds_changed.connect(_on_worlds_changed)
 	_refresh_world_list()
 	_load_world(story_profile_store.build_empty_world(), true)
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel() -> void:

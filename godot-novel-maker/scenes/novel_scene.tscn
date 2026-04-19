@@ -94,168 +94,144 @@ grow_vertical = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 124.0
+offset_bottom = 52.0
 grow_horizontal = 2
 
 [node name="Margin" type="MarginContainer" parent="UiLayer/TopBar"]
 layout_mode = 2
 theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 12
+theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 16
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_bottom = 8
 
 [node name="VBox" type="VBoxContainer" parent="UiLayer/TopBar/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 4
 
 [node name="InfoRow" type="HBoxContainer" parent="UiLayer/TopBar/Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
 [node name="SceneLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
-custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 autowrap_mode = 0
 text = "세계관: 미선택"
 
-[node name="BackendLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
-custom_minimum_size = Vector2(120, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-autowrap_mode = 0
-text = "백엔드: http"
-
-[node name="LocationLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
-size_flags_horizontal = 3
-autowrap_mode = 0
-text = "주연: 미선택"
-
 [node name="ModeLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
-custom_minimum_size = Vector2(180, 0)
+custom_minimum_size = Vector2(160, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 autowrap_mode = 0
 text = "위치: demo_room"
 
-[node name="LibraryLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
-custom_minimum_size = Vector2(150, 0)
+[node name="MenuButton" type="Button" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
 layout_mode = 2
-size_flags_horizontal = 3
-autowrap_mode = 0
-text = "라이브러리: 미설정"
+text = "≡"
 
-[node name="SettingsButton" type="Button" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
+[node name="QuickSaveButton" type="Button" parent="UiLayer/TopBar/Margin/VBox/InfoRow"]
 layout_mode = 2
-text = "설정"
+text = "💾"
 
-[node name="RenderStatusLabel" type="Label" parent="UiLayer/TopBar/Margin/VBox"]
-layout_mode = 2
-autowrap_mode = 0
-text = "장면 상태가 여기에 표시됩니다."
-
-[node name="DialoguePanel" type="PanelContainer" parent="UiLayer"]
+[node name="VnDialogLayer" type="VBoxContainer" parent="UiLayer"]
 layout_mode = 1
-anchors_preset = 15
-anchor_top = 0.0
+anchor_left = 0.0
+anchor_top = 0.65
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = 132.0
-offset_right = -24.0
-offset_bottom = -24.0
+offset_left = 16.0
+offset_top = 0.0
+offset_right = -16.0
+offset_bottom = 0.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_constants/separation = 0
 
-[node name="Margin" type="MarginContainer" parent="UiLayer/DialoguePanel"]
+[node name="SpeakerRow" type="HBoxContainer" parent="UiLayer/VnDialogLayer"]
 layout_mode = 2
-theme_override_constants/margin_left = 20
-theme_override_constants/margin_top = 18
-theme_override_constants/margin_right = 20
-theme_override_constants/margin_bottom = 18
+custom_minimum_size = Vector2(0, 40)
+theme_override_constants/separation = 0
+mouse_filter = 2
 
-[node name="VBox" type="VBoxContainer" parent="UiLayer/DialoguePanel/Margin"]
+[node name="SpeakerTab" type="PanelContainer" parent="UiLayer/VnDialogLayer/SpeakerRow"]
 layout_mode = 2
-size_flags_vertical = 3
-theme_override_constants/separation = 10
+custom_minimum_size = Vector2(80, 40)
 
-[node name="StoryScroll" type="ScrollContainer" parent="UiLayer/DialoguePanel/Margin/VBox"]
+[node name="SpeakerTabMargin" type="MarginContainer" parent="UiLayer/VnDialogLayer/SpeakerRow/SpeakerTab"]
 layout_mode = 2
-size_flags_vertical = 3
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
 
-[node name="StoryVBox" type="VBoxContainer" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll"]
+[node name="SpeakerName" type="Label" parent="UiLayer/VnDialogLayer/SpeakerRow/SpeakerTab/SpeakerTabMargin"]
 layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 10
-
-[node name="NarrationLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "내레이션이 여기에 표시됩니다."
-
-[node name="SpeakerLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 20
 text = "화자"
+theme_override_font_sizes/font_size = 16
 
-[node name="DialogueLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "대사가 여기에 표시됩니다."
-
-[node name="ActionLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox/StoryScroll/StoryVBox"]
-layout_mode = 2
-autowrap_mode = 3
-text = "행동 설명이 여기에 표시됩니다."
-
-[node name="InputEdit" type="TextEdit" parent="UiLayer/DialoguePanel/Margin/VBox"]
-custom_minimum_size = Vector2(0, 96)
-layout_mode = 2
-
-[node name="ControlsRow" type="HBoxContainer" parent="UiLayer/DialoguePanel/Margin/VBox"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="LegacyInputSpacer" type="LineEdit" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
-visible = false
+[node name="SpeakerRowSpacer" type="Control" parent="UiLayer/VnDialogLayer/SpeakerRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-placeholder_text = "다음 장면에 대한 행동이나 대사를 입력하세요..."
+mouse_filter = 2
 
-[node name="GenerateButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+[node name="DialogBox" type="PanelContainer" parent="UiLayer/VnDialogLayer"]
 layout_mode = 2
-text = "생성"
+custom_minimum_size = Vector2(0, 143)
+size_flags_horizontal = 3
 
-[node name="QuickSaveButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+[node name="DialogMargin" type="MarginContainer" parent="UiLayer/VnDialogLayer/DialogBox"]
 layout_mode = 2
-text = "빠른 저장"
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
 
-[node name="SaveButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
+[node name="DialogueLabel" type="RichTextLabel" parent="UiLayer/VnDialogLayer/DialogBox/DialogMargin"]
 layout_mode = 2
-text = "저장"
-
-[node name="LoadButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
-layout_mode = 2
-text = "불러오기"
-
-[node name="RollbackButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
-layout_mode = 2
-text = "되돌리기"
-
-[node name="MenuButton" type="Button" parent="UiLayer/DialoguePanel/Margin/VBox/ControlsRow"]
-layout_mode = 2
-text = "메인 메뉴"
-
-[node name="FooterStatusLabel" type="Label" parent="UiLayer/DialoguePanel/Margin/VBox"]
-layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+bbcode_enabled = true
+fit_content = false
+scroll_active = true
 autowrap_mode = 3
-text = "다음 장면 입력을 기다리고 있습니다."
+text = "[color=#c5afa5][i]*장면이 여기에 표시됩니다.*[/i][/color]"
 
 [node name="SettingsPanel" parent="UiLayer" instance=ExtResource("2")]
 
 [node name="SaveLoadPanel" parent="UiLayer" instance=ExtResource("3")]
+
+[node name="PlayerInputPanel" type="PanelContainer" parent="UiLayer"]
+layout_mode = 1
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = 120.0
+offset_right = -16.0
+offset_bottom = 0.0
+grow_vertical = 0
+
+[node name="PlayerInputMargin" type="MarginContainer" parent="UiLayer/PlayerInputPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
+
+[node name="PlayerInputHBox" type="HBoxContainer" parent="UiLayer/PlayerInputPanel/PlayerInputMargin"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="InputEdit" type="TextEdit" parent="UiLayer/PlayerInputPanel/PlayerInputMargin/PlayerInputHBox"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="GenerateButton" type="Button" parent="UiLayer/PlayerInputPanel/PlayerInputMargin/PlayerInputHBox"]
+custom_minimum_size = Vector2(44, 36)
+layout_mode = 2
+text = "⏎"
 
 [node name="OverlayLayer" type="Control" parent="."]
 layout_mode = 1
@@ -337,3 +313,76 @@ text = "데모 세션 켜기"
 [node name="OpenSettingsButton" type="Button" parent="OverlayLayer/OnboardingOverlay/Panel/Margin/VBox/Buttons"]
 layout_mode = 2
 text = "설정 열기"
+
+[node name="GameMenuOverlay" type="Control" parent="OverlayLayer"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameMenuShade" type="ColorRect" parent="OverlayLayer/GameMenuOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+mouse_filter = 0
+
+[node name="GameMenuPanel" type="PanelContainer" parent="OverlayLayer/GameMenuOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -210.0
+offset_right = 160.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="GameMenuMargin" type="MarginContainer" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 28
+
+[node name="GameMenuVBox" type="VBoxContainer" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="WorldTitleLabel" type="Label" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 22
+horizontal_alignment = 1
+text = "세계관 이름"
+
+[node name="Divider" type="HSeparator" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+
+[node name="GameMenuSettingsButton" type="Button" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 44)
+text = "설정"
+
+[node name="GameMenuSaveButton" type="Button" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 44)
+text = "저장"
+
+[node name="GameMenuLoadButton" type="Button" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 44)
+text = "불러오기"
+
+[node name="GameMenuExitButton" type="Button" parent="OverlayLayer/GameMenuOverlay/GameMenuPanel/GameMenuMargin/GameMenuVBox"]
+layout_mode = 2
+custom_minimum_size = Vector2(240, 44)
+text = "나가기 (메인 메뉴)"

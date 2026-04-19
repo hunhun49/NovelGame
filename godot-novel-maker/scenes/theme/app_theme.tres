@@ -1,0 +1,82 @@
+; AppPalette 색상 기준으로 제작된 프로젝트 전용 Godot 4 테마.
+; 강조(Accent) 색상: #5BC4E8 (하늘색) = Color(0.357, 0.769, 0.910, 1)
+; 보조(Secondary) 색상: #999999 = Color(0.6, 0.6, 0.6, 1)
+;
+; 이 파일에서 색상값을 변경할 때는 classes/AppPalette.gd의 상수와 동기화한다.
+[gd_resource type="Theme" format=3]
+
+[resource]
+
+; ─── TabContainer ────────────────────────────────────────────────────────────
+; 선택된 탭: ACCENT
+TabContainer/colors/font_selected_color = Color(0.357, 0.769, 0.910, 1)
+; 비선택 탭: TEXT_SECONDARY
+TabContainer/colors/font_unselected_color = Color(0.6, 0.6, 0.6, 1)
+; 호버 탭: ACCENT_HOVER
+TabContainer/colors/font_hovered_color = Color(0.475, 0.827, 0.937, 1)
+; 비활성 탭: TEXT_DISABLED
+TabContainer/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── Button ──────────────────────────────────────────────────────────────────
+; 기본 텍스트: TEXT_PRIMARY
+Button/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+; 토글 선택·눌림 상태: ACCENT
+Button/colors/font_pressed_color = Color(0.357, 0.769, 0.910, 1)
+; 호버: ACCENT_HOVER
+Button/colors/font_hover_color = Color(0.475, 0.827, 0.937, 1)
+; 포커스: ACCENT
+Button/colors/font_focus_color = Color(0.357, 0.769, 0.910, 1)
+; 호버+눌림: ACCENT_HOVER
+Button/colors/font_hover_pressed_color = Color(0.475, 0.827, 0.937, 1)
+; 비활성: TEXT_DISABLED
+Button/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── CheckBox ────────────────────────────────────────────────────────────────
+CheckBox/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+CheckBox/colors/font_pressed_color = Color(0.357, 0.769, 0.910, 1)
+CheckBox/colors/font_hover_color = Color(0.475, 0.827, 0.937, 1)
+CheckBox/colors/font_hover_pressed_color = Color(0.475, 0.827, 0.937, 1)
+CheckBox/colors/font_focus_color = Color(0.357, 0.769, 0.910, 1)
+CheckBox/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── CheckButton ─────────────────────────────────────────────────────────────
+CheckButton/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+CheckButton/colors/font_pressed_color = Color(0.357, 0.769, 0.910, 1)
+CheckButton/colors/font_hover_color = Color(0.475, 0.827, 0.937, 1)
+CheckButton/colors/font_hover_pressed_color = Color(0.475, 0.827, 0.937, 1)
+CheckButton/colors/font_focus_color = Color(0.357, 0.769, 0.910, 1)
+CheckButton/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── OptionButton ────────────────────────────────────────────────────────────
+OptionButton/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+OptionButton/colors/font_pressed_color = Color(0.357, 0.769, 0.910, 1)
+OptionButton/colors/font_hover_color = Color(0.475, 0.827, 0.937, 1)
+OptionButton/colors/font_focus_color = Color(0.357, 0.769, 0.910, 1)
+OptionButton/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── ItemList ────────────────────────────────────────────────────────────────
+; 선택된 항목 텍스트: ACCENT
+ItemList/colors/font_selected_color = Color(0.357, 0.769, 0.910, 1)
+; 기본 텍스트: TEXT_PRIMARY
+ItemList/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+; 비활성: TEXT_DISABLED
+ItemList/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 1)
+
+; ─── LineEdit ────────────────────────────────────────────────────────────────
+; 커서(캐럿): ACCENT
+LineEdit/colors/caret_color = Color(0.357, 0.769, 0.910, 1)
+; 선택 영역 배경: ACCENT_SURFACE
+LineEdit/colors/selection_color = Color(0.357, 0.769, 0.910, 0.3)
+
+; ─── TextEdit ────────────────────────────────────────────────────────────────
+; 커서(캐럿): ACCENT
+TextEdit/colors/caret_color = Color(0.357, 0.769, 0.910, 1)
+; 선택 영역 배경: ACCENT_SURFACE
+TextEdit/colors/selection_color = Color(0.357, 0.769, 0.910, 0.3)
+
+; ─── Label ───────────────────────────────────────────────────────────────────
+Label/colors/font_color = Color(1.0, 1.0, 1.0, 1)
+
+; ─── RichTextLabel ───────────────────────────────────────────────────────────
+RichTextLabel/colors/default_color = Color(1.0, 1.0, 1.0, 1)
+RichTextLabel/colors/selection_color = Color(0.357, 0.769, 0.910, 0.3)

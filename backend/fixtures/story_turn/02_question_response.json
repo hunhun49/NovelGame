@@ -1,0 +1,80 @@
+{
+  "persona": {
+    "player_name": "플레이어",
+    "player_character": {
+      "id": "player_hero",
+      "name_ko": "플레이어",
+      "summary": "질문으로 단서를 끌어내는 신입 조사원",
+      "main_personality": "침착하고 끈질김"
+    },
+    "relationship_scores": {
+      "airi": 12
+    },
+    "main_characters": [
+      {
+        "id": "airi",
+        "name_ko": "아이리",
+        "role": "조수",
+        "summary": "숨겨진 기록의 맥락을 읽는 데 능하다.",
+        "main_personality": "냉정하지만 배려심이 있음",
+        "sub_personalities": ["신중함", "예민함"],
+        "speech_style": "상황을 정리한 뒤 핵심부터 짚는다.",
+        "speech_examples": ["지금 중요한 건 누가 훔쳤느냐보다, 왜 이 방만 비어 있느냐는 거야."],
+        "goal": "빠진 보고서의 마지막 열람자를 찾기"
+      }
+    ]
+  },
+  "world": {
+    "location_id": "archive_reading_room",
+    "rating_lane": "general",
+    "flags": {
+      "archive_opened": true
+    },
+    "selected_world_id": "city_mystery",
+    "profile": {
+      "id": "city_mystery",
+      "name_ko": "야간 기록 보관소",
+      "story_title": "야간 기록 보관소",
+      "genre": "mystery",
+      "tone": "quiet suspense",
+      "premise": "비어 버린 서류함의 이유를 추적한다.",
+      "core_rules": ["질문은 맥락을 앞으로 밀어야 한다.", "같은 설명을 반복하지 않는다."],
+      "story_prompt_template": "mystery",
+      "story_examples": ["질문 하나가 분위기를 더 긴장되게 만든다."],
+      "initial_situation": "둘은 빈 서류함 앞에서 마지막 열람 기록을 확인 중이다."
+    }
+  },
+  "runtime_state": {
+    "pending_player_input": "마지막으로 이 서류함을 연 사람이 누구였는지 짐작 가는 게 있어?",
+    "scene_mode": "layered"
+  },
+  "session": {
+    "id": "fixture_question_response",
+    "reset_prompt_cache": false
+  },
+  "recent_conversation": [
+    {"role": "player", "text": "빈 칸이 이렇게 많으면 누가 일부러 빼낸 것 같아."},
+    {"role": "character", "text": "나도 그렇게 봐. 문제는 흔적이 너무 깔끔하다는 거지.", "metadata": {"speaker": "아이리"}},
+    {"role": "narration", "text": "아이리는 서류함의 금속 모서리를 손끝으로 짚으며 말을 이었다."}
+  ],
+  "asset_candidates": {
+    "backgrounds": [
+      {"id": "archive_reading_room"},
+      {"id": "archive_hall_night"}
+    ],
+    "sprites": [
+      {"id": "airi_neutral", "character_id": "airi"},
+      {"id": "airi_focus", "character_id": "airi"}
+    ],
+    "cgs": [
+      {"id": "cg_archive_clue"}
+    ],
+    "bgms": [
+      {"id": "bgm_archive_calm"}
+    ],
+    "sfxs": [
+      {"id": "sfx_drawer_slide"},
+      {"id": "sfx_page_turn"}
+    ]
+  }
+}

@@ -47,6 +47,7 @@ func _ready() -> void:
 	asset_library.library_loaded.connect(_on_runtime_changed)
 	ai_client.health_status_changed.connect(_on_runtime_changed)
 	_refresh_all(true)
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel() -> void:

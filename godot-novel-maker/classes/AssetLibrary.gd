@@ -291,6 +291,11 @@ func resolve_sprite_state(requested_state: Dictionary, rating_lane: String) -> D
 		}
 
 	if not requested_entry.is_empty() and _rating_allows(str(requested_entry.get("rating", "general")), rating_lane):
+		var entry_character_id := str(requested_entry.get("character_id", "")).strip_edges()
+		if not requested_character_id.is_empty() and entry_character_id != requested_character_id:
+			requested_entry = {}
+
+	if not requested_entry.is_empty():
 		var resolved_character_id := requested_character_id
 		if resolved_character_id.is_empty():
 			resolved_character_id = str(requested_entry.get("character_id", ""))
@@ -643,7 +648,6 @@ func _build_background_candidates(location_id: String, rating_lane: String) -> A
 
 func _build_sprite_candidates(active_character_ids: Array, rating_lane: String) -> Array:
 	var preferred: Array = []
-	var fallback: Array = []
 	var sorted_ids: Array = m_sprites_by_id.keys()
 	sorted_ids.sort()
 
@@ -653,17 +657,7 @@ func _build_sprite_candidates(active_character_ids: Array, rating_lane: String) 
 			continue
 
 		var candidate := _build_candidate_entry(entry, "sprite")
-		if active_character_ids.has(str(entry.get("character_id", ""))):
-			preferred.append(candidate)
-		else:
-			fallback.append(candidate)
-
-	if preferred.is_empty():
-		preferred = fallback
-	else:
-		for candidate in fallback:
-			if preferred.size() >= MAX_SPRITE_CANDIDATES:
-				break
+		if active_character_ids.is_empty() or active_character_ids.has(str(entry.get("character_id", ""))):
 			preferred.append(candidate)
 
 	return preferred.slice(0, MAX_SPRITE_CANDIDATES)
@@ -745,14 +739,18 @@ func _get_active_character_ids(game_state: Node) -> Array:
 	if not player_character_id.is_empty() and not character_ids.has(player_character_id):
 		character_ids.append(player_character_id)
 
-	var visual_state: Dictionary = game_state.m_current_visual_state
-	var slot_map: Dictionary = visual_state.get("character_slots", {})
-	for slot_name in slot_map.keys():
-		var slot_value: Variant = slot_map.get(slot_name, {})
-		if slot_value is Dictionary:
-			var character_id := str(slot_value.get("character_id", "")).strip_edges()
-			if not character_id.is_empty() and not character_ids.has(character_id):
-				character_ids.append(character_id)
+	# 선택된 캐릭터가 없는 경우에만 visual_state 슬롯 캐릭터를 추가한다.
+	# 선택된 캐릭터가 있는데 visual_state 슬롯에 이전 세션의 demo_guide가 남아 있으면
+	# 잘못된 스프라이트 후보가 추가되는 버그가 발생하므로 제외한다.
+	if character_ids.is_empty():
+		var visual_state: Dictionary = game_state.m_current_visual_state
+		var slot_map: Dictionary = visual_state.get("character_slots", {})
+		for slot_name in slot_map.keys():
+			var slot_value: Variant = slot_map.get(slot_name, {})
+			if slot_value is Dictionary:
+				var character_id := str(slot_value.get("character_id", "")).strip_edges()
+				if not character_id.is_empty() and not character_ids.has(character_id):
+					character_ids.append(character_id)
 
 	if character_ids.is_empty():
 		for relationship_key in game_state.m_relationship_scores.keys():

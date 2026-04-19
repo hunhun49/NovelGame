@@ -11,6 +11,14 @@ const SUMMARY_MAX_LENGTH := 30
 const WORLD_SETTING_MAX_LENGTH := 3000
 const PROLOGUE_MAX_LENGTH := 1000
 const INITIAL_SITUATION_MAX_LENGTH := 1000
+const BACKGROUND_NAME_MAX_LENGTH := 20
+const BACKGROUND_DESCRIPTION_MAX_LENGTH := 50
+const MAX_BACKGROUNDS := 20
+const BACKGROUND_IMAGE_DIR := "user://content/world_background_images"
+const BACKGROUND_IMAGE_TARGET_WIDTH := 1280
+const BACKGROUND_IMAGE_TARGET_HEIGHT := 720
+const IMAGE_TARGET_PROFILE := "profile"
+const IMAGE_TARGET_BACKGROUND := "background"
 
 @onready var m_title_label: Label = $Dimmer/Panel/Margin/Root/Header/HeaderText/TitleLabel
 @onready var m_status_label: Label = $Dimmer/Panel/Margin/Root/Header/HeaderText/StatusLabel
@@ -43,6 +51,8 @@ const INITIAL_SITUATION_MAX_LENGTH := 1000
 @onready var m_preview_image_hint_label: Label = $Dimmer/Panel/Margin/Root/Content/PreviewPanel/PreviewMargin/PreviewScroll/PreviewVBox/PreviewImageHintLabel
 @onready var m_file_dialog: FileDialog = $FileDialog
 @onready var m_image_cropper_popup: ImageCropperPopup = $ImageCropperPopup
+@onready var m_background_entries_vbox: VBoxContainer = $Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll/BackgroundsVBox/BackgroundEntriesVBox
+@onready var m_add_background_button: Button = $Dimmer/Panel/Margin/Root/Content/FormPanel/FormMargin/FormVBox/TabContainer/BackgroundsTab/BackgroundsScroll/BackgroundsVBox/AddBackgroundButton
 
 var m_selected_world_id := ""
 var m_is_new_record := true
@@ -50,6 +60,9 @@ var m_loaded_world_snapshot: Dictionary = {}
 var m_profile_image_path := ""
 var m_external_image_cache: Dictionary = {}
 var m_name_regex := RegEx.new()
+var m_backgrounds: Array = []
+var m_pending_image_target := IMAGE_TARGET_PROFILE
+var m_pending_bg_row: Dictionary = {}
 
 
 func _ready() -> void:
@@ -59,6 +72,7 @@ func _ready() -> void:
 	m_tab_container.set_tab_title(0, "프로필")
 	m_tab_container.set_tab_title(1, "세계관 설정")
 	m_tab_container.set_tab_title(2, "시작 설정")
+	m_tab_container.set_tab_title(3, "배경")
 	m_world_name_edit.max_length = WORLD_NAME_MAX_LENGTH
 	m_summary_edit.max_length = SUMMARY_MAX_LENGTH
 	m_name_regex.compile("^[0-9A-Za-z가-힣 ]+$")
@@ -76,9 +90,10 @@ func _ready() -> void:
 	m_close_button.pressed.connect(_on_close_pressed)
 	m_upload_button.pressed.connect(_on_upload_pressed)
 	m_delete_image_button.pressed.connect(_on_delete_image_pressed)
-	m_file_dialog.file_selected.connect(_on_profile_image_selected)
-	m_image_cropper_popup.crop_applied.connect(_on_profile_image_cropped)
+	m_file_dialog.file_selected.connect(_on_image_file_selected)
+	m_image_cropper_popup.crop_applied.connect(_on_image_cropped)
 	m_image_cropper_popup.closed.connect(_on_cropper_closed)
+	m_add_background_button.pressed.connect(_on_add_background_pressed)
 
 	for m_line_edit in [m_world_name_edit, m_summary_edit, m_start_setup_name_edit]:
 		m_line_edit.text_changed.connect(_on_form_changed)
@@ -90,6 +105,7 @@ func _ready() -> void:
 	story_profile_store.worlds_changed.connect(_on_worlds_changed)
 	_refresh_world_selector()
 	_load_world(story_profile_store.build_empty_world(), true)
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel(p_initial_world_id: String = "") -> void:
@@ -153,7 +169,20 @@ func _load_world(p_world_profile: Dictionary, p_is_new_record: bool) -> void:
 
 	m_delete_button.disabled = p_is_new_record
 	m_status_label.text = "세계관 정보를 입력하고 저장할 수 있습니다."
+
+	m_backgrounds = []
+	var m_raw_backgrounds: Variant = p_world_profile.get("backgrounds", [])
+	if m_raw_backgrounds is Array:
+		for m_raw_bg in m_raw_backgrounds:
+			if m_raw_bg is Dictionary:
+				m_backgrounds.append({
+					"image_path": str(m_raw_bg.get("image_path", "")).strip_edges(),
+					"name": str(m_raw_bg.get("name", "")).strip_edges(),
+					"description": str(m_raw_bg.get("description", "")).strip_edges()
+				})
+
 	_update_count_labels()
+	_rebuild_background_entries()
 	_update_profile_image_widgets()
 	_update_preview()
 
@@ -178,6 +207,18 @@ func _collect_form_data() -> Dictionary:
 	m_data["tone"] = str(m_data.get("tone", "")).strip_edges()
 	m_data["notes"] = str(m_data.get("notes", "")).strip_edges()
 	m_data["default_rating_lane"] = str(m_data.get("default_rating_lane", "general")).strip_edges()
+
+	var m_bg_list: Array = []
+	for m_bg_entry in m_backgrounds:
+		var m_name_edit := m_bg_entry.get("_name_edit") as LineEdit
+		var m_desc_edit := m_bg_entry.get("_desc_edit") as LineEdit
+		m_bg_list.append({
+			"image_path": str(m_bg_entry.get("image_path", "")).strip_edges(),
+			"name": (m_name_edit.text.strip_edges() if m_name_edit else str(m_bg_entry.get("name", "")).strip_edges()),
+			"description": (m_desc_edit.text.strip_edges() if m_desc_edit else str(m_bg_entry.get("description", "")).strip_edges())
+		})
+	m_data["backgrounds"] = m_bg_list
+
 	return m_data
 
 
@@ -339,6 +380,7 @@ func _on_delete_pressed() -> void:
 
 
 func _on_upload_pressed() -> void:
+	m_pending_image_target = IMAGE_TARGET_PROFILE
 	m_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
 	m_file_dialog.popup_centered_ratio(0.7)
 
@@ -349,7 +391,7 @@ func _on_delete_image_pressed() -> void:
 	_update_preview()
 
 
-func _on_profile_image_selected(p_path: String) -> void:
+func _on_image_file_selected(p_path: String) -> void:
 	if not FileAccess.file_exists(p_path):
 		m_status_label.text = "선택한 이미지를 찾을 수 없습니다."
 		return
@@ -359,11 +401,23 @@ func _on_profile_image_selected(p_path: String) -> void:
 		m_status_label.text = "이미지를 불러오지 못했습니다."
 		return
 
-	m_image_cropper_popup.open_with_image(m_image, p_path)
+	if m_pending_image_target == IMAGE_TARGET_BACKGROUND:
+		m_image_cropper_popup.open_with_image(m_image, p_path, BACKGROUND_IMAGE_TARGET_WIDTH, BACKGROUND_IMAGE_TARGET_HEIGHT)
+	else:
+		m_image_cropper_popup.open_with_image(m_image, p_path)
 	m_status_label.text = "팝업에서 보이는 영역을 조정한 뒤 적용해 주세요."
 
 
-func _on_profile_image_cropped(p_cropped_image: Image) -> void:
+func _on_image_cropped(p_cropped_image: Image) -> void:
+	if m_pending_image_target == IMAGE_TARGET_BACKGROUND:
+		_handle_background_image_cropped(p_cropped_image)
+	else:
+		_handle_profile_image_cropped(p_cropped_image)
+	m_pending_image_target = IMAGE_TARGET_PROFILE
+	m_pending_bg_row = {}
+
+
+func _handle_profile_image_cropped(p_cropped_image: Image) -> void:
 	var m_output_dir := "user://content/world_profile_images"
 	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(m_output_dir))
 
@@ -385,8 +439,162 @@ func _on_profile_image_cropped(p_cropped_image: Image) -> void:
 
 
 func _on_cropper_closed() -> void:
-	if m_profile_image_path.is_empty():
-		m_status_label.text = "이미지 업로드를 취소했습니다."
+	m_status_label.text = "이미지 업로드를 취소했습니다."
+	m_pending_image_target = IMAGE_TARGET_PROFILE
+	m_pending_bg_row = {}
+
+
+func _handle_background_image_cropped(p_cropped_image: Image) -> void:
+	if m_pending_bg_row.is_empty():
+		return
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(BACKGROUND_IMAGE_DIR))
+	var m_base_id := m_selected_world_id if not m_selected_world_id.is_empty() else _build_suggested_id(m_world_name_edit.text)
+	var m_output_path := "%s/%s_bg_%d.png" % [BACKGROUND_IMAGE_DIR, m_base_id, int(Time.get_unix_time_from_system())]
+	if p_cropped_image.save_png(m_output_path) != OK:
+		m_status_label.text = "배경 이미지를 저장하지 못했습니다."
+		return
+	m_external_image_cache.erase(m_output_path)
+	m_pending_bg_row["image_path"] = m_output_path
+	_update_background_row_image(m_pending_bg_row)
+	m_status_label.text = "배경 이미지를 등록했습니다."
+
+
+func _rebuild_background_entries() -> void:
+	for m_child in m_background_entries_vbox.get_children():
+		m_child.queue_free()
+	for m_bg_entry in m_backgrounds:
+		_create_background_row(m_bg_entry)
+	m_add_background_button.disabled = m_backgrounds.size() >= MAX_BACKGROUNDS
+
+
+func _create_background_row(p_entry: Dictionary) -> void:
+	# Build node tree first, then apply theme overrides after all nodes are in the scene tree.
+	# This avoids Godot 4.6 crashes when calling add_theme_constant_override before add_child.
+	var m_row := HBoxContainer.new()
+	m_background_entries_vbox.add_child(m_row)
+	m_row.add_theme_constant_override("separation", 8)
+
+	var m_image_frame := PanelContainer.new()
+	m_image_frame.custom_minimum_size = Vector2(160, 90)
+	m_row.add_child(m_image_frame)
+
+	var m_image_rect := TextureRect.new()
+	m_image_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	m_image_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	m_image_frame.add_child(m_image_rect)
+	m_image_rect.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	m_image_rect.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	m_image_rect.grow_vertical = Control.GROW_DIRECTION_BOTH
+	m_image_rect.texture = _load_external_texture(str(p_entry.get("image_path", "")))
+
+	var m_details_vbox := VBoxContainer.new()
+	m_details_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	m_row.add_child(m_details_vbox)
+	m_details_vbox.add_theme_constant_override("separation", 4)
+
+	var m_image_buttons_hbox := HBoxContainer.new()
+	m_details_vbox.add_child(m_image_buttons_hbox)
+	m_image_buttons_hbox.add_theme_constant_override("separation", 6)
+
+	var m_upload_btn := Button.new()
+	m_upload_btn.text = "이미지 업로드"
+	m_image_buttons_hbox.add_child(m_upload_btn)
+
+	var m_delete_img_btn := Button.new()
+	m_delete_img_btn.text = "이미지 삭제"
+	m_image_buttons_hbox.add_child(m_delete_img_btn)
+
+	var m_name_label := Label.new()
+	m_name_label.text = "배경 이름 (%d자 이내)" % BACKGROUND_NAME_MAX_LENGTH
+	m_details_vbox.add_child(m_name_label)
+
+	var m_name_edit := LineEdit.new()
+	m_name_edit.max_length = BACKGROUND_NAME_MAX_LENGTH
+	m_name_edit.text = str(p_entry.get("name", ""))
+	m_details_vbox.add_child(m_name_edit)
+
+	var m_name_count_label := Label.new()
+	m_name_count_label.text = "%d/%d" % [m_name_edit.text.length(), BACKGROUND_NAME_MAX_LENGTH]
+	m_name_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	m_details_vbox.add_child(m_name_count_label)
+
+	var m_desc_label := Label.new()
+	m_desc_label.text = "배경 설명 (%d자 이내)" % BACKGROUND_DESCRIPTION_MAX_LENGTH
+	m_details_vbox.add_child(m_desc_label)
+
+	var m_desc_edit := LineEdit.new()
+	m_desc_edit.max_length = BACKGROUND_DESCRIPTION_MAX_LENGTH
+	m_desc_edit.text = str(p_entry.get("description", ""))
+	m_details_vbox.add_child(m_desc_edit)
+
+	var m_desc_count_label := Label.new()
+	m_desc_count_label.text = "%d/%d" % [m_desc_edit.text.length(), BACKGROUND_DESCRIPTION_MAX_LENGTH]
+	m_desc_count_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	m_details_vbox.add_child(m_desc_count_label)
+
+	var m_delete_btn := Button.new()
+	m_delete_btn.text = "삭제"
+	m_row.add_child(m_delete_btn)
+
+	p_entry["_row_node"] = m_row
+	p_entry["_image_rect"] = m_image_rect
+	p_entry["_name_edit"] = m_name_edit
+	p_entry["_desc_edit"] = m_desc_edit
+
+	m_upload_btn.pressed.connect(func(): _on_bg_upload_pressed(p_entry))
+	m_delete_img_btn.pressed.connect(func(): _on_bg_delete_image_pressed(p_entry))
+	m_name_edit.text_changed.connect(func(_v): _on_bg_field_changed(p_entry, m_name_count_label, m_desc_count_label))
+	m_desc_edit.text_changed.connect(func(_v): _on_bg_field_changed(p_entry, m_name_count_label, m_desc_count_label))
+	m_delete_btn.pressed.connect(func(): _on_bg_delete_pressed(p_entry))
+	audio_manager.wire_button_sounds(m_row)
+
+
+func _update_background_row_image(p_entry: Dictionary) -> void:
+	var m_image_rect := p_entry.get("_image_rect") as TextureRect
+	if m_image_rect:
+		m_external_image_cache.erase(str(p_entry.get("image_path", "")))
+		m_image_rect.texture = _load_external_texture(str(p_entry.get("image_path", "")))
+
+
+func _on_add_background_pressed() -> void:
+	if m_backgrounds.size() >= MAX_BACKGROUNDS:
+		m_status_label.text = "배경은 최대 %d개까지 등록할 수 있습니다." % MAX_BACKGROUNDS
+		return
+	var m_new_entry := {"image_path": "", "name": "", "description": ""}
+	m_backgrounds.append(m_new_entry)
+	_create_background_row(m_new_entry)
+	m_add_background_button.disabled = m_backgrounds.size() >= MAX_BACKGROUNDS
+
+
+func _on_bg_upload_pressed(p_entry: Dictionary) -> void:
+	m_pending_image_target = IMAGE_TARGET_BACKGROUND
+	m_pending_bg_row = p_entry
+	m_file_dialog.current_dir = OS.get_system_dir(OS.SYSTEM_DIR_PICTURES)
+	m_file_dialog.popup_centered_ratio(0.7)
+
+
+func _on_bg_delete_image_pressed(p_entry: Dictionary) -> void:
+	p_entry["image_path"] = ""
+	_update_background_row_image(p_entry)
+
+
+func _on_bg_field_changed(p_entry: Dictionary, p_name_count_label: Label, p_desc_count_label: Label) -> void:
+	var m_name_edit := p_entry.get("_name_edit") as LineEdit
+	var m_desc_edit := p_entry.get("_desc_edit") as LineEdit
+	if m_name_edit:
+		p_entry["name"] = m_name_edit.text
+		p_name_count_label.text = "%d/%d" % [m_name_edit.text.length(), BACKGROUND_NAME_MAX_LENGTH]
+	if m_desc_edit:
+		p_entry["description"] = m_desc_edit.text
+		p_desc_count_label.text = "%d/%d" % [m_desc_edit.text.length(), BACKGROUND_DESCRIPTION_MAX_LENGTH]
+
+
+func _on_bg_delete_pressed(p_entry: Dictionary) -> void:
+	m_backgrounds.erase(p_entry)
+	var m_row_node := p_entry.get("_row_node") as Node
+	if m_row_node:
+		m_row_node.queue_free()
+	m_add_background_button.disabled = m_backgrounds.size() >= MAX_BACKGROUNDS
 
 
 func _on_close_pressed() -> void:

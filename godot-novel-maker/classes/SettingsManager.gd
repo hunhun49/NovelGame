@@ -74,8 +74,12 @@ func get_health_url() -> String:
 	return "%s/health" % get_backend_base_url()
 
 
+func get_prewarm_url() -> String:
+	return "%s/v1/backend/prewarm" % get_backend_base_url()
+
+
 func get_demo_library_path() -> String:
-	return ProjectSettings.globalize_path("res://sample-library")
+	return ProjectSettings.globalize_path("res://assets")
 
 
 func apply_demo_library() -> void:
@@ -134,6 +138,9 @@ func _sanitize_base_url(raw_value: String) -> String:
 
 	if value.ends_with("/health"):
 		value = value.substr(0, value.length() - "/health".length())
+
+	if value.ends_with("/v1/backend/prewarm"):
+		value = value.substr(0, value.length() - "/v1/backend/prewarm".length())
 
 	while value.ends_with("/"):
 		value = value.left(value.length() - 1)

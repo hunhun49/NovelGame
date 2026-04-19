@@ -1,0 +1,79 @@
+{
+  "persona": {
+    "player_name": "플레이어",
+    "player_character": {
+      "id": "player_hero",
+      "name_ko": "플레이어",
+      "summary": "상대의 감정 변화를 놓치지 않는 조사원",
+      "main_personality": "조용하지만 단호함"
+    },
+    "relationship_scores": {
+      "airi": 28
+    },
+    "main_characters": [
+      {
+        "id": "airi",
+        "name_ko": "아이리",
+        "role": "조수",
+        "summary": "감정을 숨기려 하지만 특정 사건에는 예민하게 반응한다.",
+        "main_personality": "침착함 속에 억눌린 분노가 있음",
+        "sub_personalities": ["절제", "집요함"],
+        "speech_style": "차갑게 정리해 말하다가, 중요한 순간엔 감정이 묻어난다.",
+        "speech_examples": ["그 이름은 다시 듣고 싶지 않았어. 그런데도 오늘 밤에 하필 여기서 보게 되네."],
+        "goal": "과거 사건과 연결된 이름의 정체를 확인하기"
+      }
+    ]
+  },
+  "world": {
+    "location_id": "archive_hall_night",
+    "rating_lane": "general",
+    "flags": {
+      "suspect_name_found": true
+    },
+    "selected_world_id": "city_mystery",
+    "profile": {
+      "id": "city_mystery",
+      "name_ko": "야간 기록 보관소",
+      "story_title": "야간 기록 보관소",
+      "genre": "mystery",
+      "tone": "tense",
+      "premise": "과거 사건과 현재 단서가 충돌한다.",
+      "core_rules": ["감정 고조가 장면 전개를 밀어야 한다.", "과장된 폭발보다 억눌린 긴장을 우선한다."],
+      "story_prompt_template": "mystery",
+      "story_examples": ["이름 하나가 눌려 있던 감정을 흔든다."],
+      "initial_situation": "플레이어는 낡은 카드에서 아이리가 아는 이름을 발견했다."
+    }
+  },
+  "runtime_state": {
+    "pending_player_input": "이 이름, 너한테 무슨 의미가 있는 거지? 방금 표정이 달라졌어.",
+    "scene_mode": "layered"
+  },
+  "session": {
+    "id": "fixture_emotion_rise",
+    "reset_prompt_cache": false
+  },
+  "recent_conversation": [
+    {"role": "narration", "text": "카드 끝에 적힌 이름을 읽는 순간, 아이리의 손끝이 잠깐 멈췄다."},
+    {"role": "player", "text": "이 이름을 아는 거야?"},
+    {"role": "character", "text": "모른 척할 수도 있었는데, 그럴 수가 없겠네.", "metadata": {"speaker": "아이리"}}
+  ],
+  "asset_candidates": {
+    "backgrounds": [
+      {"id": "archive_hall_night"},
+      {"id": "archive_stairs_shadow"}
+    ],
+    "sprites": [
+      {"id": "airi_focus", "character_id": "airi"},
+      {"id": "airi_angry", "character_id": "airi"}
+    ],
+    "cgs": [
+      {"id": "cg_archive_name_card"}
+    ],
+    "bgms": [
+      {"id": "bgm_archive_tension"}
+    ],
+    "sfxs": [
+      {"id": "sfx_card_flip"}
+    ]
+  }
+}

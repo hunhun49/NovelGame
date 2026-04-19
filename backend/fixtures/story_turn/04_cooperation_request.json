@@ -1,0 +1,82 @@
+{
+  "persona": {
+    "player_name": "플레이어",
+    "player_character": {
+      "id": "player_hero",
+      "name_ko": "플레이어",
+      "summary": "상대를 설득해 함께 움직이게 만드는 조사원",
+      "main_personality": "침착하고 실용적"
+    },
+    "relationship_scores": {
+      "airi": 34
+    },
+    "main_characters": [
+      {
+        "id": "airi",
+        "name_ko": "아이리",
+        "role": "조수",
+        "summary": "불신이 남아 있어도 일단 합리적인 제안은 받아들인다.",
+        "main_personality": "조심스럽지만 협력의 가치를 아는 타입",
+        "sub_personalities": ["분석적", "냉정함"],
+        "speech_style": "상대의 제안을 검토한 뒤 조건을 붙여 수락한다.",
+        "speech_examples": ["좋아, 같이 움직이자. 대신 이번엔 네가 먼저 위험 신호를 숨기지 마."],
+        "goal": "보고서 원본이 있을 법한 지하 보관실에 진입하기"
+      }
+    ]
+  },
+  "world": {
+    "location_id": "archive_locked_stairs",
+    "rating_lane": "general",
+    "flags": {
+      "suspect_name_found": true,
+      "stairs_key_missing": true
+    },
+    "selected_world_id": "city_mystery",
+    "profile": {
+      "id": "city_mystery",
+      "name_ko": "야간 기록 보관소",
+      "story_title": "야간 기록 보관소",
+      "genre": "mystery",
+      "tone": "focused teamwork",
+      "premise": "위험한 지하 보관실로 내려가기 전에 역할을 나눈다.",
+      "core_rules": ["협력 요청은 바로 다음 행동으로 이어져야 한다.", "관계 변화는 과장하지 않는다."],
+      "story_prompt_template": "basic",
+      "story_examples": ["도움을 청한 뒤 둘의 거리가 조금 정리된다."],
+      "initial_situation": "잠긴 계단 앞에서 둘은 열쇠 대신 다른 진입법을 고민하고 있다."
+    }
+  },
+  "runtime_state": {
+    "pending_player_input": "혼자 들어가면 위험해. 이번엔 네가 옆에서 같이 봐 줬으면 해.",
+    "scene_mode": "layered"
+  },
+  "session": {
+    "id": "fixture_cooperation_request",
+    "reset_prompt_cache": false
+  },
+  "recent_conversation": [
+    {"role": "player", "text": "지하 보관실로 이어지는 계단은 찾았어."},
+    {"role": "character", "text": "열쇠가 없으면 억지로 열 수도 있지만, 소리가 너무 커질 거야.", "metadata": {"speaker": "아이리"}},
+    {"role": "system", "text": "계단 아래에서 희미한 금속 울림이 들렸다.", "metadata": {"type": "action"}}
+  ],
+  "asset_candidates": {
+    "backgrounds": [
+      {"id": "archive_locked_stairs"},
+      {"id": "archive_hall_night"}
+    ],
+    "sprites": [
+      {"id": "airi_focus", "character_id": "airi"},
+      {"id": "airi_smile", "character_id": "airi"}
+    ],
+    "cgs": [
+      {"id": "cg_archive_stairs"}
+    ],
+    "bgms": [
+      {"id": "bgm_archive_tension"},
+      {"id": "bgm_archive_calm"}
+    ],
+    "sfxs": [
+      {"id": "sfx_key_rattle"},
+      {"id": "sfx_metal_echo"}
+    ]
+  }
+}

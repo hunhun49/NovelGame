@@ -133,6 +133,7 @@ func _ready() -> void:
 
 	_refresh_character_list()
 	_load_character(story_profile_store.build_empty_character(), true)
+	audio_manager.wire_button_sounds(self)
 
 
 func open_panel() -> void:
@@ -176,11 +177,11 @@ func _setup_emotion_widgets() -> void:
 		m_emotion_image_paths[m_emotion_key] = ""
 		var m_emotion_block := _get_emotion_block(m_emotion_key)
 		var m_upload_button: Button = m_emotion_block.get_node("Buttons/UploadButton")
-		var m_delete_button: Button = m_emotion_block.get_node("Buttons/DeleteButton")
+		var emotion_delete_button: Button = m_emotion_block.get_node("Buttons/DeleteButton")
 		m_upload_button.pressed.connect(func() -> void:
 			_open_image_picker(IMAGE_TARGET_EMOTION, m_emotion_key)
 		)
-		m_delete_button.pressed.connect(func() -> void:
+		emotion_delete_button.pressed.connect(func() -> void:
 			_on_emotion_delete_pressed(m_emotion_key)
 		)
 
@@ -331,9 +332,9 @@ func _add_event_image_row(p_initial_value: Dictionary = {}) -> void:
 	m_root.add_theme_constant_override("separation", 10)
 	m_margin.add_child(m_root)
 
-	var m_title_label := Label.new()
-	m_title_label.text = "이벤트 이미지"
-	m_root.add_child(m_title_label)
+	var event_title_label := Label.new()
+	event_title_label.text = "이벤트 이미지"
+	m_root.add_child(event_title_label)
 
 	var m_content_row := HBoxContainer.new()
 	m_content_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -377,9 +378,9 @@ func _add_event_image_row(p_initial_value: Dictionary = {}) -> void:
 	m_upload_button.text = "이미지 업로드"
 	m_buttons.add_child(m_upload_button)
 
-	var m_delete_button := Button.new()
-	m_delete_button.text = "이미지 삭제"
-	m_buttons.add_child(m_delete_button)
+	var event_delete_button := Button.new()
+	event_delete_button.text = "이미지 삭제"
+	m_buttons.add_child(event_delete_button)
 
 	var m_remove_button := Button.new()
 	m_remove_button.text = "행 삭제"
@@ -397,7 +398,7 @@ func _add_event_image_row(p_initial_value: Dictionary = {}) -> void:
 	m_upload_button.pressed.connect(func() -> void:
 		_open_image_picker(IMAGE_TARGET_EVENT, "", m_row_data)
 	)
-	m_delete_button.pressed.connect(func() -> void:
+	event_delete_button.pressed.connect(func() -> void:
 		m_row_data["image_path"] = ""
 		_update_event_row_widgets(m_row_data)
 		_on_form_changed()
@@ -525,11 +526,11 @@ func _update_emotion_widgets() -> void:
 		var m_emotion_block := _get_emotion_block(m_emotion_key)
 		var m_texture_rect: TextureRect = m_emotion_block.get_node("PreviewFrame/EmotionRect")
 		var m_path_label: Label = m_emotion_block.get_node("PathLabel")
-		var m_delete_button: Button = m_emotion_block.get_node("Buttons/DeleteButton")
+		var emotion_refresh_delete_button: Button = m_emotion_block.get_node("Buttons/DeleteButton")
 		var m_image_path := str(m_emotion_image_paths.get(m_emotion_key, "")).strip_edges()
 		m_texture_rect.texture = _load_external_texture(m_image_path)
 		m_path_label.text = m_image_path.get_file() if not m_image_path.is_empty() else "등록된 이미지가 없습니다."
-		m_delete_button.disabled = m_image_path.is_empty()
+		emotion_refresh_delete_button.disabled = m_image_path.is_empty()
 
 
 func _update_event_row_widgets(p_row_data: Dictionary) -> void:

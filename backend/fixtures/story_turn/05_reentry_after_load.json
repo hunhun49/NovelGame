@@ -1,0 +1,83 @@
+{
+  "persona": {
+    "player_name": "플레이어",
+    "player_character": {
+      "id": "player_hero",
+      "name_ko": "플레이어",
+      "summary": "흐름을 놓치지 않으려는 조사원",
+      "main_personality": "차분하고 기억력이 좋음"
+    },
+    "relationship_scores": {
+      "airi": 36
+    },
+    "main_characters": [
+      {
+        "id": "airi",
+        "name_ko": "아이리",
+        "role": "조수",
+        "summary": "직전 장면의 분위기를 이어 받아 바로 판단을 내릴 수 있다.",
+        "main_personality": "침착하고 실용적",
+        "sub_personalities": ["예민함", "신속함"],
+        "speech_style": "앞선 흐름을 짧게 짚고 다음 행동을 제안한다.",
+        "speech_examples": ["방금 정리한 흐름은 충분해. 이제 더 늦기 전에 아래로 내려가 보자."],
+        "goal": "지하 보관실 입구를 통과할 방법을 정하기"
+      }
+    ]
+  },
+  "world": {
+    "location_id": "archive_locked_stairs",
+    "rating_lane": "general",
+    "flags": {
+      "suspect_name_found": true,
+      "stairs_key_missing": true,
+      "airi_trust_step_up": true
+    },
+    "selected_world_id": "city_mystery",
+    "profile": {
+      "id": "city_mystery",
+      "name_ko": "야간 기록 보관소",
+      "story_title": "야간 기록 보관소",
+      "genre": "mystery",
+      "tone": "reentry focus",
+      "premise": "불러오기 이후에도 직전 흐름을 자연스럽게 이어 간다.",
+      "core_rules": ["불러오기 직후에도 과거 흐름이 섞이지 않게 한다.", "최근 대화 우선 원칙을 지킨다."],
+      "story_prompt_template": "basic",
+      "story_examples": ["재진입 후 첫 턴은 현재 직전 맥락을 다시 붙잡아야 한다."],
+      "initial_situation": "둘은 막 저장 후 다시 불러온 흐름에서 잠긴 계단 앞에 서 있다."
+    }
+  },
+  "runtime_state": {
+    "pending_player_input": "좋아, 그럼 정리한 단서 기준으로 이번엔 어디부터 확인할까?",
+    "scene_mode": "layered"
+  },
+  "session": {
+    "id": "fixture_reentry_after_load",
+    "reset_prompt_cache": true
+  },
+  "recent_conversation": [
+    {"role": "player", "text": "혼자 들어가면 위험하니까 같이 움직여 줘."},
+    {"role": "character", "text": "좋아, 같이 가자. 대신 이상하면 바로 멈추는 거야.", "metadata": {"speaker": "아이리"}},
+    {"role": "narration", "text": "짧은 합의가 끝나자 계단 아래의 어둠이 전보다 덜 낯설게 느껴졌다."},
+    {"role": "system", "text": "잠긴 문 너머에서 마른 종이 긁히는 소리가 다시 들렸다.", "metadata": {"type": "action"}}
+  ],
+  "asset_candidates": {
+    "backgrounds": [
+      {"id": "archive_locked_stairs"},
+      {"id": "archive_basement_gate"}
+    ],
+    "sprites": [
+      {"id": "airi_focus", "character_id": "airi"},
+      {"id": "airi_neutral", "character_id": "airi"}
+    ],
+    "cgs": [
+      {"id": "cg_archive_stairs"}
+    ],
+    "bgms": [
+      {"id": "bgm_archive_tension"}
+    ],
+    "sfxs": [
+      {"id": "sfx_metal_echo"},
+      {"id": "sfx_page_turn"}
+    ]
+  }
+}

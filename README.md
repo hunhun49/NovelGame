@@ -56,6 +56,9 @@ Godot 기반 로컬 AI 비주얼 노벨 프로젝트입니다.
 
 - Godot -> FastAPI -> Ollama
 
+현재 기본 권장 모델은 `gemma4:e4b` 입니다. `qwen2.5:14b`는 비교 기준선으로 유지하고, `qwen2.5:7b`는 VRAM 또는 응답 속도를 더 우선할 때 쓰는 경량 대안입니다.
+백엔드 기본값도 `gemma4:e4b` 프로필로 맞춰져 있어서, 아래 예시 그대로 실행하면 됩니다. 세부 튜닝이나 7B override는 `backend/README.md`를 보면 됩니다.
+
 빠른 시작:
 
 ```powershell
@@ -63,9 +66,11 @@ cd backend
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
-ollama pull qwen2.5:7b
+ollama pull gemma4:e4b
 uvicorn main:app --host 127.0.0.1 --port 8000 --reload
 ```
+
+Ollama 서버가 아직 켜져 있지 않다면, 다른 터미널에서 `ollama serve` 를 먼저 실행합니다.
 
 그 후 게임 설정에서:
 
@@ -96,3 +101,14 @@ my-library/
 - `docs/10_Ollama_Local_Backend.md`
 - `docs/06_Visual_Layer_System.md`
 - `docs/08_Save_History_Management.md`
+
+## Session Prompt Cache
+
+- 로컬 백엔드는 선택적 `session.id` 와 `session.reset_prompt_cache` 를 지원합니다.
+- 이 세션 캐시는 장기 기억이 아니라 `프롬프트용 중간 요약 캐시` 로만 동작합니다.
+- save/load 이후 첫 턴에서는 같은 `session_id` 를 유지하되 cache reset 흐름을 타도록 구현했습니다.
+
+## Model Compare Fixtures
+
+- 고정 fixture 기반 비교 스크립트: `backend/tools/compare_models.py`
+- 기본 비교 모델: `qwen2.5:14b`, `gemma4:e4b`

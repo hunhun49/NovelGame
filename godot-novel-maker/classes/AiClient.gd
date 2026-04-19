@@ -7,17 +7,29 @@ signal health_status_changed(status_state: Dictionary)
 
 const TURN_TIMEOUT_SECONDS := 90.0
 const HEALTH_TIMEOUT_SECONDS := 5.0
+const PREWARM_TIMEOUT_SECONDS := 20.0
+const UNKNOWN_MODEL := "model-unknown"
 
 var m_turn_request: HTTPRequest
 var m_health_request: HTTPRequest
+var m_prewarm_request: HTTPRequest
 var m_turn_in_flight := false
 var m_health_in_flight := false
+var m_prewarm_in_flight := false
+var m_pending_turn_payload: Dictionary = {}
+var m_pending_turn_prewarm_retries := 0
 var m_last_health_state := {
 	"status": "not_checked",
 	"message": "백엔드 상태를 아직 확인하지 않았습니다.",
 	"ready": false,
+	"warm": false,
+	"warm_fail_reasons": ["not_checked"],
 	"provider": "unknown",
-	"model": "미확인"
+	"model": UNKNOWN_MODEL,
+	"effective_num_ctx": 0,
+	"context_length": 0,
+	"size_vram": 0,
+	"expires_at": ""
 }
 
 
@@ -31,6 +43,11 @@ func _ready() -> void:
 	m_health_request.timeout = HEALTH_TIMEOUT_SECONDS
 	m_health_request.request_completed.connect(_on_health_request_completed)
 	add_child(m_health_request)
+
+	m_prewarm_request = HTTPRequest.new()
+	m_prewarm_request.timeout = PREWARM_TIMEOUT_SECONDS
+	m_prewarm_request.request_completed.connect(_on_prewarm_request_completed)
+	add_child(m_prewarm_request)
 
 	request_backend_health_check()
 
@@ -49,10 +66,32 @@ func is_backend_ready() -> bool:
 	return bool(m_last_health_state.get("ready", false))
 
 
+func is_backend_warm() -> bool:
+	if settings_manager.uses_stub_backend():
+		return true
+	return bool(m_last_health_state.get("warm", false))
+
+
+func ensure_backend_warm(reason: String = "manual") -> void:
+	if settings_manager.uses_stub_backend():
+		return
+	if m_prewarm_in_flight or is_backend_warm():
+		return
+	_start_prewarm_request(reason)
+
+
+func get_request_phase() -> String:
+	if m_prewarm_in_flight:
+		return "warming"
+	if m_turn_in_flight:
+		return "generating"
+	return "idle"
+
+
 func get_active_model_name() -> String:
 	if settings_manager.uses_stub_backend():
 		return "stub-local"
-	return str(m_last_health_state.get("model", "미확인"))
+	return str(m_last_health_state.get("model", UNKNOWN_MODEL))
 
 
 func get_active_provider_name() -> String:
@@ -67,20 +106,22 @@ func get_active_backend_summary() -> String:
 
 	var provider := get_active_provider_name()
 	var model := get_active_model_name()
-	if model.is_empty() or model == "미확인":
+	if model.is_empty() or model == UNKNOWN_MODEL:
 		return provider
 	return "%s / %s" % [provider, model]
 
 
 func request_backend_health_check() -> void:
 	if settings_manager.uses_stub_backend():
-		m_last_health_state = {
-			"status": "stub",
-			"message": "Stub 백엔드 모드가 활성화되어 있습니다.",
-			"ready": true,
-			"provider": "stub",
-			"model": "stub-local"
-		}
+		m_last_health_state = _build_health_state(
+			"stub",
+			"Stub backend mode is enabled.",
+			true,
+			true,
+			[],
+			"stub",
+			"stub-local"
+		)
 		health_status_changed.emit(get_last_health_state())
 		return
 
@@ -89,24 +130,27 @@ func request_backend_health_check() -> void:
 
 	var request_error := m_health_request.request(settings_manager.get_health_url(), PackedStringArray(), HTTPClient.METHOD_GET)
 	if request_error != OK:
-		m_last_health_state = {
-			"status": "request_error",
-			"message": "백엔드 헬스 체크를 시작하지 못했습니다. (오류 %d)" % request_error,
-			"ready": false,
-			"provider": "backend",
-			"model": "미확인"
-		}
+		m_last_health_state = _build_health_state(
+			"request_error",
+			"백엔드 상태 확인을 시작하지 못했습니다. (%d)" % request_error,
+			false,
+			false,
+			["health_request_error"]
+		)
 		health_status_changed.emit(get_last_health_state())
 		return
 
 	m_health_in_flight = true
-	m_last_health_state = {
-		"status": "checking",
-		"message": "백엔드 상태를 확인하고 있습니다...",
-		"ready": false,
-		"provider": "backend",
-		"model": "확인 중"
-	}
+	m_last_health_state = _build_health_state(
+		"checking",
+		"백엔드 상태 확인 중...",
+		false,
+		false,
+		["health_check_in_progress"],
+		"backend",
+		"checking",
+		int(m_last_health_state.get("effective_num_ctx", 0))
+	)
 	health_status_changed.emit(get_last_health_state())
 
 
@@ -115,17 +159,17 @@ func request_turn(payload: Dictionary) -> void:
 		_emit_stub_turn(payload)
 		return
 
-	if m_turn_in_flight:
-		emit_turn_failure("busy", "이미 다른 턴 요청을 처리하고 있습니다.")
+	if m_turn_in_flight or not m_pending_turn_payload.is_empty():
+		emit_turn_failure("busy", "이미 다른 요청을 처리하고 있습니다.")
 		return
 
-	var headers := PackedStringArray(["Content-Type: application/json"])
-	var request_error := m_turn_request.request(settings_manager.get_turn_url(), headers, HTTPClient.METHOD_POST, JSON.stringify(payload))
-	if request_error != OK:
-		emit_turn_failure("request_error", "HTTP 턴 요청을 시작하지 못했습니다. (오류 %d)" % request_error)
+	if not is_backend_warm():
+		m_pending_turn_payload = payload.duplicate(true)
+		m_pending_turn_prewarm_retries = 1
+		ensure_backend_warm("turn_request")
 		return
 
-	m_turn_in_flight = true
+	_start_turn_request(payload)
 
 
 func emit_turn_failure(kind: String, message: String, http_code: int = 0, raw_body: String = "") -> void:
@@ -137,170 +181,193 @@ func emit_turn_failure(kind: String, message: String, http_code: int = 0, raw_bo
 	})
 
 
+func _start_turn_request(payload: Dictionary) -> void:
+	var headers := PackedStringArray(["Content-Type: application/json"])
+	var request_error := m_turn_request.request(
+		settings_manager.get_turn_url(),
+		headers,
+		HTTPClient.METHOD_POST,
+		JSON.stringify(payload)
+	)
+	if request_error != OK:
+		emit_turn_failure("request_error", "턴 요청을 시작하지 못했습니다. (%d)" % request_error)
+		return
+
+	m_turn_in_flight = true
+
+
+func _start_prewarm_request(reason: String) -> void:
+	if settings_manager.uses_stub_backend() or m_prewarm_in_flight:
+		return
+
+	var headers := PackedStringArray(["Content-Type: application/json"])
+	var request_error := m_prewarm_request.request(
+		settings_manager.get_prewarm_url(),
+		headers,
+		HTTPClient.METHOD_POST,
+		JSON.stringify({"reason": reason})
+	)
+	if request_error != OK:
+		_handle_prewarm_failure("prewarm_request_error", "Prewarm 요청을 시작하지 못했습니다. (%d)" % request_error)
+		return
+
+	m_prewarm_in_flight = true
+
+
+func _on_prewarm_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
+	m_prewarm_in_flight = false
+
+	if result != HTTPRequest.RESULT_SUCCESS:
+		_handle_prewarm_failure("prewarm_network_error", "Prewarm 요청이 실패했습니다. 결과 코드: %d" % result)
+		return
+
+	if response_code < 200 or response_code >= 300:
+		_handle_prewarm_failure(
+			"prewarm_http_error",
+			"Prewarm 요청이 HTTP %d를 반환했습니다." % response_code,
+			body.get_string_from_utf8()
+		)
+		return
+
+	var raw_body := body.get_string_from_utf8()
+	var parsed: Variant = JSON.parse_string(raw_body)
+	if not (parsed is Dictionary):
+		_handle_prewarm_failure("prewarm_invalid_json", "Prewarm 응답이 JSON 객체가 아닙니다.", raw_body)
+		return
+
+	_apply_health_state(parsed as Dictionary)
+	health_status_changed.emit(get_last_health_state())
+
+	if is_backend_warm():
+		_resume_pending_turn()
+		return
+
+	_handle_prewarm_failure("prewarm_not_warm", "Prewarm 이후에도 backend가 warm 상태가 아닙니다.", raw_body)
+
+
+func _handle_prewarm_failure(kind: String, message: String, raw_body: String = "") -> void:
+	var warm_fail_reasons: Array = []
+	for raw_reason in m_last_health_state.get("warm_fail_reasons", []):
+		var reason_text := str(raw_reason).strip_edges()
+		if not reason_text.is_empty() and not warm_fail_reasons.has(reason_text):
+			warm_fail_reasons.append(reason_text)
+	if warm_fail_reasons.is_empty():
+		warm_fail_reasons.append(kind)
+
+	m_last_health_state["warm"] = false
+	m_last_health_state["message"] = message
+	m_last_health_state["warm_fail_reasons"] = warm_fail_reasons
+	m_last_health_state["raw_body"] = raw_body
+	health_status_changed.emit(get_last_health_state())
+
+	if m_pending_turn_payload.is_empty():
+		return
+
+	if m_pending_turn_prewarm_retries > 0:
+		m_pending_turn_prewarm_retries -= 1
+		_start_prewarm_request("turn_retry")
+		return
+
+	_resume_pending_turn(true)
+
+
+func _resume_pending_turn(force_direct_turn: bool = false) -> void:
+	if m_pending_turn_payload.is_empty():
+		return
+	if not force_direct_turn and not is_backend_warm():
+		return
+
+	var queued_payload := m_pending_turn_payload.duplicate(true)
+	m_pending_turn_payload = {}
+	m_pending_turn_prewarm_retries = 0
+	_start_turn_request(queued_payload)
+
+
 func _emit_stub_turn(payload: Dictionary) -> void:
 	var persona: Dictionary = payload.get("persona", {})
 	var world: Dictionary = payload.get("world", {})
 	var runtime_state: Dictionary = payload.get("runtime_state", {})
 	var asset_candidates: Dictionary = payload.get("asset_candidates", {})
-	var pending_input := str(runtime_state.get("pending_player_input", "")).strip_edges()
-	var lowercase_input := pending_input.to_lower()
-	var scene_mode := "layered"
-
 	var main_characters: Array = persona.get("main_characters", [])
-	var player_character: Dictionary = persona.get("player_character", {})
 	var world_profile: Dictionary = world.get("profile", {})
-	var world_name := str(world_profile.get("story_title", "")).strip_edges()
-	if world_name.is_empty():
-		world_name = str(world_profile.get("name_ko", "선택된 세계관"))
-	var lead_character_id := "demo_guide"
-	var lead_character_name := "안내자"
-	var lead_character_profile: Dictionary = {}
-	var player_character_name := str(player_character.get("name_ko", "")).strip_edges()
-	if player_character_name.is_empty():
-		player_character_name = str(persona.get("player_name", "?뚮젅?댁뼱"))
-	var preferred_sprite_ids: Array = []
-	if not main_characters.is_empty():
-		var main_character: Dictionary = main_characters[0]
-		lead_character_profile = main_character.duplicate(true)
-		lead_character_id = str(main_character.get("id", lead_character_id))
-		lead_character_name = str(main_character.get("name_ko", lead_character_name))
-		preferred_sprite_ids = main_character.get("preferred_sprite_ids", []).duplicate(true)
-
-	var background_candidates: Array = asset_candidates.get("backgrounds", [])
-	var sprite_candidates: Array = asset_candidates.get("sprites", [])
-	var cg_candidates: Array = asset_candidates.get("cgs", [])
-	var bgm_candidates: Array = asset_candidates.get("bgms", [])
-	var sfx_candidates: Array = asset_candidates.get("sfxs", [])
-
-	if lowercase_input.contains("#cg") and not cg_candidates.is_empty():
-		scene_mode = "cg"
-
-	var background_id := ""
-	if not background_candidates.is_empty():
-		background_id = str((background_candidates[0] as Dictionary).get("id", ""))
-
-	var neutral_emotion_path := _get_preferred_stub_image_path(lead_character_profile)
-	var sprite_candidate := _pick_sprite_candidate(sprite_candidates, lead_character_id, preferred_sprite_ids)
+	var pending_input := str(runtime_state.get("pending_player_input", "")).strip_edges()
+	var world_name := str(world_profile.get("story_title", world_profile.get("name_ko", "Story"))).strip_edges()
+	var lead_character: Dictionary = {}
+	if not main_characters.is_empty() and main_characters[0] is Dictionary:
+		lead_character = (main_characters[0] as Dictionary).duplicate(true)
+	var lead_character_id := str(lead_character.get("id", "lead")).strip_edges()
+	var lead_character_name := str(lead_character.get("name_ko", lead_character.get("name", "Guide"))).strip_edges()
+	var background_id := _get_first_candidate_id(asset_candidates.get("backgrounds", []))
+	var cg_id := _get_first_candidate_id(asset_candidates.get("cgs", []))
+	var bgm_id := _get_first_candidate_id(asset_candidates.get("bgms", []))
+	var sfx_id := _get_first_candidate_id(asset_candidates.get("sfxs", []))
+	var sprite_id := _pick_sprite_candidate_id(asset_candidates.get("sprites", []), lead_character_id)
+	var scene_mode := "cg" if pending_input.to_lower().contains("#cg") and not cg_id.is_empty() else "layered"
 	var character_states: Array = []
-	if not neutral_emotion_path.is_empty():
+	if scene_mode == "layered" and not sprite_id.is_empty():
 		character_states.append({
 			"character_id": lead_character_id,
-			"image_path": neutral_emotion_path,
-			"position": "center"
-		})
-	elif not sprite_candidate.is_empty():
-		character_states.append({
-			"character_id": lead_character_id,
-			"sprite_id": str(sprite_candidate.get("id", "")),
+			"sprite_id": sprite_id,
 			"position": "center"
 		})
 
-	var cg_id := ""
-	if scene_mode == "cg" and not cg_candidates.is_empty():
-		cg_id = str((cg_candidates[0] as Dictionary).get("id", ""))
-
-	var audio_payload := {}
-	if not bgm_candidates.is_empty():
-		audio_payload["bgm_id"] = str((bgm_candidates[0] as Dictionary).get("id", ""))
-		audio_payload["volume_profile"] = "quiet"
-
-	if lowercase_input.contains("#sfx") and not sfx_candidates.is_empty():
-		audio_payload["sfx_id"] = str((sfx_candidates[0] as Dictionary).get("id", ""))
-
-	var player_line := pending_input
-	if player_line.is_empty():
-		player_line = "다음 장면을 진행해 줘"
-
-	var stub_content := _build_stub_content(player_line, lowercase_input, world_name, lead_character_name, player_character_name)
+	if pending_input.is_empty():
+		pending_input = "다음 장면을 이어 가 줘."
 
 	turn_succeeded.emit({
-		"content": stub_content,
+		"content": {
+			"narration": "%s의 공기가 조금 더 팽팽해지고, 다음 선택을 기다리는 정적이 길게 이어진다." % world_name,
+			"dialogue": "%s, 방금 한 말을 바탕으로 다음 장면을 더 밀어 보자." % lead_character_name,
+			"action": "%s가 시선을 들어 다음 반응을 재촉하듯 한 걸음 가까워진다." % lead_character_name
+		},
 		"direction": {
 			"scene_mode": scene_mode,
 			"background_id": background_id,
 			"character_states": character_states,
-			"cg_id": cg_id,
+			"cg_id": cg_id if scene_mode == "cg" else "",
 			"transition": "crossfade" if scene_mode == "cg" else "fade",
 			"camera_fx": "dim" if scene_mode == "cg" else "none"
 		},
 		"state_update": {
-			"relationship_delta": {
-				lead_character_id: 1
-			},
-			"set_flags": [
-				"story_started_%s" % str(world.get("selected_world_id", "demo_world"))
-			],
-			"content_rating": str(world_profile.get("default_rating_lane", "general"))
+			"relationship_delta": {lead_character_id: 1},
+			"set_flags": ["stub_turn"],
+			"content_rating": str(world.get("rating_lane", "general"))
 		},
 		"memory_hint": {
-			"summary_candidate": "%s 세계관에서 %s 중심의 로컬 테스트 턴이 한 번 진행되었습니다." % [world_name, lead_character_name]
+			"summary_candidate": "%s에서 %s와의 대화가 한 단계 진행됐다." % [world_name, lead_character_name]
 		},
-		"audio": audio_payload
+		"audio": {
+			"bgm_id": bgm_id,
+			"sfx_id": sfx_id if pending_input.to_lower().contains("#sfx") else "",
+			"volume_profile": "quiet"
+		}
 	})
 
 
-func _build_stub_content(player_line: String, lowercase_input: String, world_name: String, lead_character_name: String, player_character_name: String) -> Dictionary:
-	var narration := "%s에서 %s의 말에 반응해 다음 장면이 이어집니다." % [world_name, player_character_name]
-	var dialogue := "좋아. 방금 한 말을 바탕으로 다음 흐름을 이어 볼게."
-	var action := "%s이(가) 플레이어의 의도를 받아 장면 분위기를 정리합니다." % lead_character_name
-
-	if lowercase_input.contains("안녕") or lowercase_input.contains("반가"):
-		narration = "%s의 공기가 조금 부드러워지며 첫 대화가 자연스럽게 시작됩니다." % world_name
-		dialogue = "안녕. 긴장하지 말고, 지금 떠오른 말을 그대로 이어 줘."
-		action = "%s이(가) 경계심을 풀고 대화를 이어 갈 준비를 합니다." % lead_character_name
-	elif player_line.ends_with("?") or lowercase_input.contains("왜") or lowercase_input.contains("어떻게") or lowercase_input.contains("뭐"):
-		narration = "%s의 질문이 장면의 중심으로 떠오르며, 주변의 시선이 %s에게 모입니다." % [player_character_name, lead_character_name]
-		dialogue = "좋은 질문이야. 단정하지 말고 하나씩 확인해 보자. 지금 상황에서 가장 중요한 건 네가 무엇을 원하는지야."
-		action = "%s이(가) 바로 답을 주기보다, 다음 선택으로 이어질 단서를 건넵니다." % lead_character_name
-	elif lowercase_input.contains("도와") or lowercase_input.contains("도와줘") or lowercase_input.contains("부탁"):
-		narration = "%s의 요청에 장면의 긴장감이 조금 누그러지고 협력의 분위기가 생깁니다." % player_character_name
-		dialogue = "알겠어. 내가 앞을 정리할 테니 너는 핵심만 말해 줘."
-		action = "%s이(가) 플레이어 편에 서서 다음 행동의 실마리를 제공합니다." % lead_character_name
-	elif lowercase_input.contains("싫") or lowercase_input.contains("화나") or lowercase_input.contains("짜증"):
-		narration = "%s의 감정이 거칠게 흔들리자 장면의 공기도 즉시 무거워집니다." % player_character_name
-		dialogue = "지금 감정이 큰 건 이해해. 하지만 여기서 무너지면 네가 원하는 답에 더 멀어질 수도 있어."
-		action = "%s이(가) 감정을 받아 주면서도 장면을 통제하려 합니다." % lead_character_name
-	else:
-		narration = "%s 세계관에서 입력한 말이 다음 사건의 방향을 정하는 신호로 반영됩니다. 입력은 \"%s\"입니다." % [world_name, player_line]
-		dialogue = "\"%s\"라면, 그 말에는 분명 의도가 있어. 그 의도부터 따라가 보자." % player_line
-		action = "%s이(가) 플레이어의 말을 단서로 삼아 다음 장면 전환을 준비합니다." % lead_character_name
-
-	return {
-		"narration": narration,
-		"dialogue": dialogue,
-		"action": action
-	}
-
-
-func _pick_sprite_candidate(sprite_candidates: Array, lead_character_id: String, preferred_sprite_ids: Array) -> Dictionary:
-	for preferred_sprite_id in preferred_sprite_ids:
-		for raw_candidate in sprite_candidates:
-			var candidate := raw_candidate as Dictionary
-			if str(candidate.get("id", "")) == str(preferred_sprite_id):
-				return candidate
-
-	for raw_candidate in sprite_candidates:
-		var candidate := raw_candidate as Dictionary
-		if str(candidate.get("character_id", "")) == lead_character_id:
-			return candidate
-
-	if not sprite_candidates.is_empty():
-		return sprite_candidates[0]
-
-	return {}
-
-
-func _get_preferred_stub_image_path(character_profile: Dictionary) -> String:
-	if character_profile.is_empty():
+func _get_first_candidate_id(raw_value: Variant) -> String:
+	if not (raw_value is Array) or (raw_value as Array).is_empty():
 		return ""
+	for raw_item in raw_value:
+		if raw_item is Dictionary:
+			var item_id := str((raw_item as Dictionary).get("id", "")).strip_edges()
+			if not item_id.is_empty():
+				return item_id
+	return ""
 
-	var emotion_images: Variant = character_profile.get("emotion_images", {})
-	if emotion_images is Dictionary:
-		var neutral_path := str((emotion_images as Dictionary).get("neutral", "")).strip_edges()
-		if not neutral_path.is_empty():
-			return neutral_path
 
-	return str(character_profile.get("thumbnail_path", "")).strip_edges()
+func _pick_sprite_candidate_id(raw_value: Variant, character_id: String) -> String:
+	if not (raw_value is Array):
+		return ""
+	for raw_item in raw_value:
+		if not (raw_item is Dictionary):
+			continue
+		var item := raw_item as Dictionary
+		if str(item.get("character_id", "")).strip_edges() != character_id:
+			continue
+		var item_id := str(item.get("id", "")).strip_edges()
+		if not item_id.is_empty():
+			return item_id
+	return _get_first_candidate_id(raw_value)
 
 
 func _on_turn_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray) -> void:
@@ -308,14 +375,13 @@ func _on_turn_request_completed(result: int, response_code: int, _headers: Packe
 
 	if result != HTTPRequest.RESULT_SUCCESS:
 		if result == HTTPRequest.RESULT_TIMEOUT:
-			emit_turn_failure("timeout", "턴 생성 시간이 초과되었습니다. 로컬 모델 응답이 늦어 백엔드 대기 시간을 늘렸거나 더 가벼운 모델이 필요할 수 있습니다.", response_code)
+			emit_turn_failure("timeout", "응답 대기 시간이 초과되었습니다.", response_code)
 			return
-
-		emit_turn_failure("network_error", "HTTP 턴 요청이 실패했습니다. 엔진 결과 코드: %d" % result, response_code)
+		emit_turn_failure("network_error", "HTTP 요청이 실패했습니다. 결과 코드: %d" % result, response_code)
 		return
 
 	if response_code < 200 or response_code >= 300:
-		emit_turn_failure("http_error", "백엔드가 턴 요청에 HTTP %d를 반환했습니다." % response_code, response_code, body.get_string_from_utf8())
+		emit_turn_failure("http_error", "백엔드가 HTTP %d를 반환했습니다." % response_code, response_code, body.get_string_from_utf8())
 		return
 
 	var raw_body := body.get_string_from_utf8()
@@ -324,9 +390,9 @@ func _on_turn_request_completed(result: int, response_code: int, _headers: Packe
 		emit_turn_failure("invalid_json", "백엔드가 올바른 JSON을 반환하지 않았습니다.", response_code, raw_body)
 		return
 
-	var validation := _validate_turn_payload(parsed)
+	var validation := _validate_turn_payload(parsed as Dictionary)
 	if not bool(validation.get("ok", false)):
-		emit_turn_failure("schema_error", str(validation.get("message", "턴 응답 검증에 실패했습니다.")), response_code, raw_body)
+		emit_turn_failure("schema_error", str(validation.get("message", "응답 스키마 검증에 실패했습니다.")), response_code, raw_body)
 		return
 
 	turn_succeeded.emit(parsed)
@@ -336,158 +402,153 @@ func _on_health_request_completed(result: int, response_code: int, _headers: Pac
 	m_health_in_flight = false
 
 	if result != HTTPRequest.RESULT_SUCCESS:
-		m_last_health_state = {
-			"status": "network_error",
-			"message": "백엔드 헬스 체크가 실패했습니다. 엔진 결과 코드: %d" % result,
-			"ready": false,
-			"provider": "backend",
-			"model": "미확인"
-		}
+		m_last_health_state = _build_health_state(
+			"network_error",
+			"백엔드 상태 확인에 실패했습니다. 결과 코드: %d" % result,
+			false,
+			false,
+			["health_network_error"]
+		)
 		health_status_changed.emit(get_last_health_state())
 		return
 
 	if response_code < 200 or response_code >= 300:
-		m_last_health_state = {
-			"status": "http_error",
-			"message": "백엔드 헬스 엔드포인트가 HTTP %d를 반환했습니다." % response_code,
-			"ready": false,
-			"raw_body": body.get_string_from_utf8(),
-			"provider": "backend",
-			"model": "미확인"
-		}
+		m_last_health_state = _build_health_state(
+			"http_error",
+			"백엔드 상태 확인이 HTTP %d를 반환했습니다." % response_code,
+			false,
+			false,
+			["health_http_error"]
+		)
+		m_last_health_state["raw_body"] = body.get_string_from_utf8()
 		health_status_changed.emit(get_last_health_state())
 		return
 
 	var raw_body := body.get_string_from_utf8()
 	var parsed: Variant = JSON.parse_string(raw_body)
-	var provider := "backend"
-	var model := "미확인"
-	var message := "백엔드 연결이 정상입니다."
-	var ready := true
-	var status := "healthy"
-
 	if parsed is Dictionary:
-		provider = str(parsed.get("provider", provider)).strip_edges()
-		model = str(parsed.get("model", model)).strip_edges()
-		message = str(parsed.get("message", message)).strip_edges()
-		ready = bool(parsed.get("ready", true))
-		status = str(parsed.get("status", status)).strip_edges()
+		_apply_health_state(parsed as Dictionary)
+	else:
+		m_last_health_state = _build_health_state(
+			"invalid_json",
+			"백엔드 상태 응답이 JSON 객체가 아닙니다.",
+			false,
+			false,
+			["health_invalid_json"]
+		)
+		m_last_health_state["raw_body"] = raw_body
 
-	if provider.is_empty():
-		provider = "backend"
-	if model.is_empty():
-		model = "미확인"
-	if message.is_empty():
-		message = "백엔드 연결이 정상입니다."
-	if status.is_empty():
-		status = "healthy"
+	health_status_changed.emit(get_last_health_state())
 
-	m_last_health_state = {
+	if bool(m_last_health_state.get("ready", false)) and not is_backend_warm():
+		ensure_backend_warm("health_success")
+
+
+func _apply_health_state(status_state: Dictionary) -> void:
+	var warm_fail_reasons: Array = []
+	for raw_reason in status_state.get("warm_fail_reasons", []):
+		var reason_text := str(raw_reason).strip_edges()
+		if not reason_text.is_empty() and not warm_fail_reasons.has(reason_text):
+			warm_fail_reasons.append(reason_text)
+
+	m_last_health_state = _build_health_state(
+		str(status_state.get("status", "unknown")),
+		str(status_state.get("message", "No backend status available.")),
+		bool(status_state.get("ready", false)),
+		bool(status_state.get("warm", false)),
+		warm_fail_reasons,
+		str(status_state.get("provider", "backend")),
+		str(status_state.get("model", UNKNOWN_MODEL)),
+		int(status_state.get("effective_num_ctx", 0))
+	)
+	m_last_health_state["context_length"] = int(status_state.get("context_length", 0))
+	m_last_health_state["size_vram"] = int(status_state.get("size_vram", 0))
+	m_last_health_state["expires_at"] = str(status_state.get("expires_at", ""))
+	if status_state.has("prewarm"):
+		m_last_health_state["prewarm"] = status_state.get("prewarm")
+
+
+func _build_health_state(
+	status: String,
+	message: String,
+	ready: bool,
+	warm: bool,
+	warm_fail_reasons: Array,
+	provider: String = "backend",
+	model: String = UNKNOWN_MODEL,
+	effective_num_ctx: int = 0
+) -> Dictionary:
+	return {
 		"status": status,
 		"message": message,
 		"ready": ready,
+		"warm": warm,
+		"warm_fail_reasons": warm_fail_reasons.duplicate(),
 		"provider": provider,
-		"model": model
+		"model": model,
+		"effective_num_ctx": effective_num_ctx,
+		"context_length": 0,
+		"size_vram": 0,
+		"expires_at": ""
 	}
-	health_status_changed.emit(get_last_health_state())
 
 
 func _validate_turn_payload(payload: Dictionary) -> Dictionary:
-	var required_sections := ["content", "direction", "state_update", "memory_hint"]
-	for section_name in required_sections:
-		if not (payload.get(section_name, {}) is Dictionary):
-			return {
-				"ok": false,
-				"message": "턴 응답에 '%s' 섹션이 없습니다." % section_name
-			}
+	for key in ["content", "direction", "state_update", "memory_hint", "audio"]:
+		if not (payload.get(key, {}) is Dictionary):
+			return {"ok": false, "message": "%s must be a Dictionary." % key}
 
-	var content: Dictionary = payload["content"]
+	var content: Dictionary = payload.get("content", {})
 	if not _all_string_fields(content, ["narration", "dialogue", "action"]):
-		return {
-			"ok": false,
-			"message": "content에는 narration, dialogue, action 문자열이 모두 있어야 합니다."
-		}
+		return {"ok": false, "message": "content fields must be strings."}
 
-	var direction: Dictionary = payload["direction"]
+	var direction: Dictionary = payload.get("direction", {})
+	if not _all_string_fields(direction, ["scene_mode", "background_id", "cg_id", "transition", "camera_fx"]):
+		return {"ok": false, "message": "direction fields must be strings."}
+
 	var scene_mode := str(direction.get("scene_mode", ""))
 	if scene_mode != "layered" and scene_mode != "cg":
-		return {
-			"ok": false,
-			"message": "direction.scene_mode는 'layered' 또는 'cg'여야 합니다."
-		}
+		return {"ok": false, "message": "direction.scene_mode is invalid."}
 
-	var character_states: Variant = direction.get("character_states", [])
-	if not (character_states is Array):
-		return {
-			"ok": false,
-			"message": "direction.character_states는 배열이어야 합니다."
-		}
+	var raw_character_states_value: Variant = direction.get("character_states", [])
+	if not (raw_character_states_value is Array):
+		return {"ok": false, "message": "direction.character_states must be an Array."}
+	var raw_character_states: Array = raw_character_states_value
+	for raw_state in raw_character_states:
+		if not (raw_state is Dictionary):
+			return {"ok": false, "message": "character_states entries must be Dictionary values."}
+		var state := raw_state as Dictionary
+		if not _all_string_fields(state, ["character_id", "position"]):
+			return {"ok": false, "message": "character_state.character_id and position must be strings."}
+		if not state.has("sprite_id") and not state.has("image_path"):
+			return {"ok": false, "message": "character_state requires sprite_id or image_path."}
+		if state.has("sprite_id") and typeof(state.get("sprite_id", "")) != TYPE_STRING:
+			return {"ok": false, "message": "character_state.sprite_id must be a string."}
+		if state.has("image_path") and typeof(state.get("image_path", "")) != TYPE_STRING:
+			return {"ok": false, "message": "character_state.image_path must be a string."}
 
-	for state in character_states:
-		if not (state is Dictionary):
-			return {
-				"ok": false,
-				"message": "character_states의 각 항목은 객체여야 합니다."
-			}
+	var state_update: Dictionary = payload.get("state_update", {})
+	if not (state_update.get("relationship_delta", {}) is Dictionary):
+		return {"ok": false, "message": "state_update.relationship_delta must be a Dictionary."}
+	if not (state_update.get("set_flags", []) is Array):
+		return {"ok": false, "message": "state_update.set_flags must be an Array."}
+	if typeof(state_update.get("content_rating", "")) != TYPE_STRING:
+		return {"ok": false, "message": "state_update.content_rating must be a string."}
 
-		var position := str(state.get("position", ""))
-		if position != "left" and position != "center" and position != "right":
-			return {
-				"ok": false,
-				"message": "캐릭터 위치는 left, center, right 중 하나여야 합니다."
-			}
+	var memory_hint: Dictionary = payload.get("memory_hint", {})
+	if typeof(memory_hint.get("summary_candidate", "")) != TYPE_STRING:
+		return {"ok": false, "message": "memory_hint.summary_candidate must be a string."}
 
-		if str(state.get("character_id", "")).strip_edges().is_empty():
-			return {
-				"ok": false,
-				"message": "각 캐릭터 상태에는 character_id가 필요합니다."
-			}
+	var audio: Dictionary = payload.get("audio", {})
+	if not _all_string_fields(audio, ["bgm_id", "sfx_id", "volume_profile"]):
+		return {"ok": false, "message": "audio fields must be strings."}
 
-		if str(state.get("sprite_id", "")).strip_edges().is_empty():
-			return {
-				"ok": false,
-				"message": "각 캐릭터 상태에는 sprite_id가 필요합니다."
-			}
-
-	if str((payload["state_update"] as Dictionary).get("content_rating", "")).strip_edges().is_empty():
-		return {
-			"ok": false,
-			"message": "state_update.content_rating이 비어 있습니다."
-		}
-
-	if payload.has("audio"):
-		var audio: Variant = payload.get("audio", {})
-		if not (audio is Dictionary):
-			return {
-				"ok": false,
-				"message": "audio 섹션은 객체여야 합니다."
-			}
-
-		if audio.has("bgm_id") and not (audio.get("bgm_id", "") is String):
-			return {
-				"ok": false,
-				"message": "audio.bgm_id는 문자열이어야 합니다."
-			}
-
-		if audio.has("sfx_id") and not (audio.get("sfx_id", "") is String):
-			return {
-				"ok": false,
-				"message": "audio.sfx_id는 문자열이어야 합니다."
-			}
-
-		if audio.has("volume_profile") and not (audio.get("volume_profile", "") is String):
-			return {
-				"ok": false,
-				"message": "audio.volume_profile은 문자열이어야 합니다."
-			}
-
-	return {
-		"ok": true
-	}
+	return {"ok": true}
 
 
 func _all_string_fields(target: Dictionary, field_names: Array) -> bool:
-	for field_name in field_names:
-		if not (target.get(field_name, "") is String):
+	for raw_name in field_names:
+		var field_name := str(raw_name)
+		if typeof(target.get(field_name, "")) != TYPE_STRING:
 			return false
 	return true

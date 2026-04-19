@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>graphify - graphify-out\graph.html</title>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0f0f1a; color: #e0e0e0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; display: flex; height: 100vh; overflow: hidden; }
+  #graph { flex: 1; }
+  #sidebar { width: 280px; background: #1a1a2e; border-left: 1px solid #2a2a4e; display: flex; flex-direction: column; overflow: hidden; }
+  #search-wrap { padding: 12px; border-bottom: 1px solid #2a2a4e; }
+  #search { width: 100%; background: #0f0f1a; border: 1px solid #3a3a5e; color: #e0e0e0; padding: 7px 10px; border-radius: 6px; font-size: 13px; outline: none; }
+  #search:focus { border-color: #4E79A7; }
+  #search-results { max-height: 140px; overflow-y: auto; padding: 4px 12px; border-bottom: 1px solid #2a2a4e; display: none; }
+  .search-item { padding: 4px 6px; cursor: pointer; border-radius: 4px; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .search-item:hover { background: #2a2a4e; }
+  #info-panel { padding: 14px; border-bottom: 1px solid #2a2a4e; min-height: 140px; }
+  #info-panel h3 { font-size: 13px; color: #aaa; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+  #info-content { font-size: 13px; color: #ccc; line-height: 1.6; }
+  #info-content .field { margin-bottom: 5px; }
+  #info-content .field b { color: #e0e0e0; }
+  #info-content .empty { color: #555; font-style: italic; }
+  .neighbor-link { display: block; padding: 2px 6px; margin: 2px 0; border-radius: 3px; cursor: pointer; font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border-left: 3px solid #333; }
+  .neighbor-link:hover { background: #2a2a4e; }
+  #neighbors-list { max-height: 160px; overflow-y: auto; margin-top: 4px; }
+  #legend-wrap { flex: 1; overflow-y: auto; padding: 12px; }
+  #legend-wrap h3 { font-size: 13px; color: #aaa; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+  .legend-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; cursor: pointer; border-radius: 4px; font-size: 12px; }
+  .legend-item:hover { background: #2a2a4e; padding-left: 4px; }
+  .legend-item.dimmed { opacity: 0.35; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-label { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .legend-count { color: #666; font-size: 11px; }
+  #stats { padding: 10px 14px; border-top: 1px solid #2a2a4e; font-size: 11px; color: #555; }
+</style>
+</head>
+<body>
+<div id="graph"></div>
+<div id="sidebar">
+  <div id="search-wrap">
+    <input id="search" type="text" placeholder="Search nodes..." autocomplete="off">
+    <div id="search-results"></div>
+  </div>
+  <div id="info-panel">
+    <h3>Node Info</h3>
+    <div id="info-content"><span class="empty">Click a node to inspect it</span></div>
+  </div>
+  <div id="legend-wrap">
+    <h3>Communities</h3>
+    <div id="legend"></div>
+  </div>
+  <div id="stats">40 nodes &middot; 62 edges &middot; 9 communities</div>
+</div>
+<script>
+const RAW_NODES = [{"id": "prompt_cognition_arch_backend_api_contract", "label": "Backend API Contract", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Backend API Contract", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/01_Prompt_Congnition_Arch.md", "file_type": "document", "degree": 4}, {"id": "prompt_cognition_arch_structured_turn_generation", "label": "Structured Turn Generation", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Structured Turn Generation", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/01_Prompt_Congnition_Arch.md", "file_type": "document", "degree": 8}, {"id": "prompt_cognition_arch_response_schema_validation", "label": "Response Schema Validation", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Response Schema Validation", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/01_Prompt_Congnition_Arch.md", "file_type": "document", "degree": 3}, {"id": "prompt_cognition_arch_asset_id_fallback", "label": "Asset ID Fallback", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 28.8, "font": {"size": 12, "color": "#ffffff"}, "title": "Asset ID Fallback", "community": 6, "community_name": "Scene Fallback and Layer UI", "source_file": "raw/01_Prompt_Congnition_Arch.md", "file_type": "document", "degree": 5}, {"id": "prompt_cognition_arch_stub_backend_mode", "label": "Stub Backend Mode", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Stub Backend Mode", "community": 3, "community_name": "Backend Integration Path", "source_file": "raw/01_Prompt_Congnition_Arch.md", "file_type": "document", "degree": 1}, {"id": "dynamic_voice_speech_profile", "label": "Structured Speech Profile", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Structured Speech Profile", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/02_Dynamic_Voice_Design.md", "file_type": "document", "degree": 4}, {"id": "dynamic_voice_relationship_modes", "label": "Relationship Language Stages", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Relationship Language Stages", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/02_Dynamic_Voice_Design.md", "file_type": "document", "degree": 2}, {"id": "dynamic_voice_emotion_shift", "label": "Emotion-Driven Speech Shift", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Emotion-Driven Speech Shift", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/02_Dynamic_Voice_Design.md", "file_type": "document", "degree": 1}, {"id": "dynamic_voice_style_anchor_rationale", "label": "Style Anchor Rationale", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Style Anchor Rationale", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/02_Dynamic_Voice_Design.md", "file_type": "document", "degree": 1}, {"id": "visual_orch_asset_library", "label": "Asset Library Manifest", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Asset Library Manifest", "community": 7, "community_name": "Asset Lane Separation", "source_file": "raw/03_Visual_Orchestration.md", "file_type": "document", "degree": 3}, {"id": "visual_orch_candidate_filtering", "label": "Candidate Filtering Pipeline", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 36.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Candidate Filtering Pipeline", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/03_Visual_Orchestration.md", "file_type": "document", "degree": 7}, {"id": "visual_orch_layered_mode", "label": "Layered Scene Mode", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Layered Scene Mode", "community": 6, "community_name": "Scene Fallback and Layer UI", "source_file": "raw/03_Visual_Orchestration.md", "file_type": "document", "degree": 4}, {"id": "visual_orch_cg_mode", "label": "CG Scene Mode", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "CG Scene Mode", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/03_Visual_Orchestration.md", "file_type": "document", "degree": 3}, {"id": "visual_orch_candidate_restriction_rationale", "label": "Filtered Candidate Rationale", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Filtered Candidate Rationale", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/03_Visual_Orchestration.md", "file_type": "document", "degree": 1}, {"id": "memory_system_memory_hierarchy", "label": "Memory Hierarchy", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 36.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Memory Hierarchy", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/04_Narrative_Memory_System.md", "file_type": "document", "degree": 7}, {"id": "memory_system_continuity_check", "label": "Continuity Check", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Continuity Check", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/04_Narrative_Memory_System.md", "file_type": "document", "degree": 1}, {"id": "memory_system_state_based_branching", "label": "State-Based Branching", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "State-Based Branching", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/04_Narrative_Memory_System.md", "file_type": "document", "degree": 2}, {"id": "web_infra_local_backend_architecture", "label": "Local Backend Architecture", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 32.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Local Backend Architecture", "community": 3, "community_name": "Backend Integration Path", "source_file": "raw/05_Web_Infra_Optimization.md", "file_type": "document", "degree": 6}, {"id": "web_infra_health_endpoint", "label": "Health Endpoint", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Health Endpoint", "community": 3, "community_name": "Backend Integration Path", "source_file": "raw/05_Web_Infra_Optimization.md", "file_type": "document", "degree": 2}, {"id": "web_infra_story_turn_endpoint", "label": "Story Turn Endpoint", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 28.8, "font": {"size": 12, "color": "#ffffff"}, "title": "Story Turn Endpoint", "community": 3, "community_name": "Backend Integration Path", "source_file": "raw/05_Web_Infra_Optimization.md", "file_type": "document", "degree": 5}, {"id": "visual_layer_vn_layer_stack", "label": "VN Layer Stack", "color": {"background": "#B07AA1", "border": "#B07AA1", "highlight": {"background": "#ffffff", "border": "#B07AA1"}}, "size": 28.8, "font": {"size": 12, "color": "#ffffff"}, "title": "VN Layer Stack", "community": 6, "community_name": "Scene Fallback and Layer UI", "source_file": "raw/06_Visual_Layer_System.md", "file_type": "document", "degree": 5}, {"id": "sound_orch_audio_orchestration", "label": "Audio Candidate Orchestration", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Audio Candidate Orchestration", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/07_Sound_Orchestration.md", "file_type": "document", "degree": 3}, {"id": "save_history_vn_state_snapshot", "label": "VN State Snapshot Save", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 32.5, "font": {"size": 12, "color": "#ffffff"}, "title": "VN State Snapshot Save", "community": 4, "community_name": "Save and Runtime Settings", "source_file": "raw/08_Save_History_Management.md", "file_type": "document", "degree": 6}, {"id": "save_history_settings_save_separation", "label": "Settings and Save Separation", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Settings and Save Separation", "community": 4, "community_name": "Save and Runtime Settings", "source_file": "raw/08_Save_History_Management.md", "file_type": "document", "degree": 2}, {"id": "save_history_snapshot_rationale", "label": "Resume State Rationale", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Resume State Rationale", "community": 4, "community_name": "Save and Runtime Settings", "source_file": "raw/08_Save_History_Management.md", "file_type": "document", "degree": 1}, {"id": "safety_guardrails_rating_lane", "label": "Rating Lane", "color": {"background": "#F28E2B", "border": "#F28E2B", "highlight": {"background": "#ffffff", "border": "#F28E2B"}}, "size": 40.0, "font": {"size": 12, "color": "#ffffff"}, "title": "Rating Lane", "community": 1, "community_name": "Turn and Content Orchestration", "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md", "file_type": "document", "degree": 8}, {"id": "safety_guardrails_safety_policy", "label": "Safety Guardrails", "color": {"background": "#9C755F", "border": "#9C755F", "highlight": {"background": "#ffffff", "border": "#9C755F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Safety Guardrails", "community": 8, "community_name": "Safety Policy Core", "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md", "file_type": "document", "degree": 2}, {"id": "safety_guardrails_asset_lane_separation", "label": "General and Adult Asset Separation", "color": {"background": "#FF9DA7", "border": "#FF9DA7", "highlight": {"background": "#ffffff", "border": "#FF9DA7"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "General and Adult Asset Separation", "community": 7, "community_name": "Asset Lane Separation", "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md", "file_type": "document", "degree": 2}, {"id": "safety_guardrails_player_toggles", "label": "Player Content Toggles", "color": {"background": "#59A14F", "border": "#59A14F", "highlight": {"background": "#ffffff", "border": "#59A14F"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Player Content Toggles", "community": 4, "community_name": "Save and Runtime Settings", "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md", "file_type": "document", "degree": 2}, {"id": "safety_guardrails_local_freedom_rationale", "label": "Local Stack Freedom Rationale", "color": {"background": "#9C755F", "border": "#9C755F", "highlight": {"background": "#ffffff", "border": "#9C755F"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Local Stack Freedom Rationale", "community": 8, "community_name": "Safety Policy Core", "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md", "file_type": "document", "degree": 1}, {"id": "ollama_backend_fastapi_server", "label": "FastAPI Local Server", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 25.0, "font": {"size": 12, "color": "#ffffff"}, "title": "FastAPI Local Server", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/10_Ollama_Local_Backend.md", "file_type": "document", "degree": 4}, {"id": "ollama_backend_ollama_stack", "label": "Ollama Backend", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Ollama Backend", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/10_Ollama_Local_Backend.md", "file_type": "document", "degree": 3}, {"id": "ollama_backend_qwen_profile", "label": "Qwen 2.5 14B Profile", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Qwen 2.5 14B Profile", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/10_Ollama_Local_Backend.md", "file_type": "document", "degree": 1}, {"id": "ollama_backend_schema_repair", "label": "Schema Repair", "color": {"background": "#E15759", "border": "#E15759", "highlight": {"background": "#ffffff", "border": "#E15759"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Schema Repair", "community": 2, "community_name": "Model and Schema Runtime", "source_file": "raw/10_Ollama_Local_Backend.md", "file_type": "document", "degree": 2}, {"id": "ollama_backend_backend_separation_rationale", "label": "Backend Separation Rationale", "color": {"background": "#76B7B2", "border": "#76B7B2", "highlight": {"background": "#ffffff", "border": "#76B7B2"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Backend Separation Rationale", "community": 3, "community_name": "Backend Integration Path", "source_file": "raw/10_Ollama_Local_Backend.md", "file_type": "document", "degree": 1}, {"id": "vn_dialog_ui_vn_dialog_ui", "label": "VN Dialogue UI", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "VN Dialogue UI", "community": 5, "community_name": "Dialogue Interaction UI", "source_file": "raw/11_VN_Dialog_Scene.md", "file_type": "document", "degree": 2}, {"id": "vn_dialog_ui_typing_effect", "label": "Typing Effect", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 17.5, "font": {"size": 12, "color": "#ffffff"}, "title": "Typing Effect", "community": 5, "community_name": "Dialogue Interaction UI", "source_file": "raw/11_VN_Dialog_Scene.md", "file_type": "document", "degree": 2}, {"id": "vn_dialog_ui_input_lock", "label": "Input Lock During Typing", "color": {"background": "#EDC948", "border": "#EDC948", "highlight": {"background": "#ffffff", "border": "#EDC948"}}, "size": 13.8, "font": {"size": 0, "color": "#ffffff"}, "title": "Input Lock During Typing", "community": 5, "community_name": "Dialogue Interaction UI", "source_file": "raw/11_VN_Dialog_Scene.md", "file_type": "document", "degree": 1}, {"id": "local_ai_server_prompt_builder", "label": "Prompt Builder", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Prompt Builder", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/local_ai_server_prompt.md", "file_type": "document", "degree": 3}, {"id": "local_ai_server_vector_memory", "label": "Vector Memory Backend", "color": {"background": "#4E79A7", "border": "#4E79A7", "highlight": {"background": "#ffffff", "border": "#4E79A7"}}, "size": 21.2, "font": {"size": 12, "color": "#ffffff"}, "title": "Vector Memory Backend", "community": 0, "community_name": "Narrative Memory Design", "source_file": "raw/local_ai_server_prompt.md", "file_type": "document", "degree": 3}];
+const RAW_EDGES = [{"from": "prompt_cognition_arch_backend_api_contract", "to": "prompt_cognition_arch_structured_turn_generation", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_backend_api_contract", "to": "prompt_cognition_arch_response_schema_validation", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_backend_api_contract", "to": "prompt_cognition_arch_asset_id_fallback", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_backend_api_contract", "to": "ollama_backend_fastapi_server", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "web_infra_story_turn_endpoint", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "visual_orch_candidate_filtering", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "memory_system_memory_hierarchy", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "safety_guardrails_rating_lane", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "visual_orch_layered_mode", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "visual_orch_cg_mode", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_structured_turn_generation", "to": "save_history_vn_state_snapshot", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "prompt_cognition_arch_response_schema_validation", "to": "web_infra_story_turn_endpoint", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_response_schema_validation", "to": "ollama_backend_schema_repair", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "prompt_cognition_arch_asset_id_fallback", "to": "visual_orch_asset_library", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "prompt_cognition_arch_asset_id_fallback", "to": "visual_orch_layered_mode", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_asset_id_fallback", "to": "safety_guardrails_rating_lane", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "prompt_cognition_arch_asset_id_fallback", "to": "visual_layer_vn_layer_stack", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "prompt_cognition_arch_stub_backend_mode", "to": "web_infra_local_backend_architecture", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "dynamic_voice_speech_profile", "to": "dynamic_voice_relationship_modes", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "dynamic_voice_speech_profile", "to": "dynamic_voice_emotion_shift", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "dynamic_voice_speech_profile", "to": "dynamic_voice_style_anchor_rationale", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "dynamic_voice_speech_profile", "to": "memory_system_memory_hierarchy", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "dynamic_voice_relationship_modes", "to": "memory_system_state_based_branching", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "visual_orch_asset_library", "to": "visual_orch_candidate_filtering", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_asset_library", "to": "safety_guardrails_asset_lane_separation", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "visual_orch_candidate_filtering", "to": "visual_orch_candidate_restriction_rationale", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_candidate_filtering", "to": "visual_orch_layered_mode", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_candidate_filtering", "to": "visual_orch_cg_mode", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_candidate_filtering", "to": "safety_guardrails_rating_lane", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_candidate_filtering", "to": "sound_orch_audio_orchestration", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "visual_orch_layered_mode", "to": "visual_layer_vn_layer_stack", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_orch_cg_mode", "to": "visual_layer_vn_layer_stack", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "memory_system_memory_hierarchy", "to": "memory_system_continuity_check", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "memory_system_memory_hierarchy", "to": "memory_system_state_based_branching", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "memory_system_memory_hierarchy", "to": "save_history_vn_state_snapshot", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "memory_system_memory_hierarchy", "to": "local_ai_server_prompt_builder", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "memory_system_memory_hierarchy", "to": "local_ai_server_vector_memory", "label": "shares_data_with", "title": "shares_data_with [AMBIGUOUS]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "AMBIGUOUS"}, {"from": "web_infra_local_backend_architecture", "to": "web_infra_health_endpoint", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_infra_local_backend_architecture", "to": "web_infra_story_turn_endpoint", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_infra_local_backend_architecture", "to": "ollama_backend_fastapi_server", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_infra_local_backend_architecture", "to": "ollama_backend_backend_separation_rationale", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_infra_local_backend_architecture", "to": "local_ai_server_vector_memory", "label": "conceptually_related_to", "title": "conceptually_related_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "web_infra_health_endpoint", "to": "web_infra_story_turn_endpoint", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "web_infra_story_turn_endpoint", "to": "sound_orch_audio_orchestration", "label": "references", "title": "references [AMBIGUOUS]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "AMBIGUOUS"}, {"from": "visual_layer_vn_layer_stack", "to": "vn_dialog_ui_vn_dialog_ui", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "visual_layer_vn_layer_stack", "to": "save_history_vn_state_snapshot", "label": "shares_data_with", "title": "shares_data_with [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "sound_orch_audio_orchestration", "to": "safety_guardrails_rating_lane", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "save_history_vn_state_snapshot", "to": "save_history_snapshot_rationale", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "save_history_vn_state_snapshot", "to": "save_history_settings_save_separation", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "save_history_vn_state_snapshot", "to": "safety_guardrails_rating_lane", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "save_history_settings_save_separation", "to": "safety_guardrails_player_toggles", "label": "shares_data_with", "title": "shares_data_with [AMBIGUOUS]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "AMBIGUOUS"}, {"from": "safety_guardrails_rating_lane", "to": "safety_guardrails_safety_policy", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "safety_guardrails_rating_lane", "to": "safety_guardrails_asset_lane_separation", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "safety_guardrails_rating_lane", "to": "safety_guardrails_player_toggles", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "safety_guardrails_safety_policy", "to": "safety_guardrails_local_freedom_rationale", "label": "rationale_for", "title": "rationale_for [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "ollama_backend_fastapi_server", "to": "ollama_backend_ollama_stack", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "ollama_backend_fastapi_server", "to": "local_ai_server_prompt_builder", "label": "semantically_similar_to", "title": "semantically_similar_to [INFERRED]", "dashes": true, "width": 1, "color": {"opacity": 0.35}, "confidence": "INFERRED"}, {"from": "ollama_backend_ollama_stack", "to": "ollama_backend_qwen_profile", "label": "references", "title": "references [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "ollama_backend_ollama_stack", "to": "ollama_backend_schema_repair", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "vn_dialog_ui_vn_dialog_ui", "to": "vn_dialog_ui_typing_effect", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "vn_dialog_ui_typing_effect", "to": "vn_dialog_ui_input_lock", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}, {"from": "local_ai_server_prompt_builder", "to": "local_ai_server_vector_memory", "label": "conceptually_related_to", "title": "conceptually_related_to [EXTRACTED]", "dashes": false, "width": 2, "color": {"opacity": 0.7}, "confidence": "EXTRACTED"}];
+const LEGEND = [{"cid": 0, "color": "#4E79A7", "label": "Narrative Memory Design", "count": 9}, {"cid": 1, "color": "#F28E2B", "label": "Turn and Content Orchestration", "count": 6}, {"cid": 2, "color": "#E15759", "label": "Model and Schema Runtime", "count": 6}, {"cid": 3, "color": "#76B7B2", "label": "Backend Integration Path", "count": 5}, {"cid": 4, "color": "#59A14F", "label": "Save and Runtime Settings", "count": 4}, {"cid": 5, "color": "#EDC948", "label": "Dialogue Interaction UI", "count": 3}, {"cid": 6, "color": "#B07AA1", "label": "Scene Fallback and Layer UI", "count": 3}, {"cid": 7, "color": "#FF9DA7", "label": "Asset Lane Separation", "count": 2}, {"cid": 8, "color": "#9C755F", "label": "Safety Policy Core", "count": 2}];
+
+// HTML-escape helper — prevents XSS when injecting graph data into innerHTML
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// Build vis datasets
+const nodesDS = new vis.DataSet(RAW_NODES.map(n => ({
+  id: n.id, label: n.label, color: n.color, size: n.size,
+  font: n.font, title: n.title,
+  _community: n.community, _community_name: n.community_name,
+  _source_file: n.source_file, _file_type: n.file_type, _degree: n.degree,
+})));
+
+const edgesDS = new vis.DataSet(RAW_EDGES.map((e, i) => ({
+  id: i, from: e.from, to: e.to,
+  label: '',
+  title: e.title,
+  dashes: e.dashes,
+  width: e.width,
+  color: e.color,
+  arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+})));
+
+const container = document.getElementById('graph');
+const network = new vis.Network(container, { nodes: nodesDS, edges: edgesDS }, {
+  physics: {
+    enabled: true,
+    solver: 'forceAtlas2Based',
+    forceAtlas2Based: {
+      gravitationalConstant: -60,
+      centralGravity: 0.005,
+      springLength: 120,
+      springConstant: 0.08,
+      damping: 0.4,
+      avoidOverlap: 0.8,
+    },
+    stabilization: { iterations: 200, fit: true },
+  },
+  interaction: {
+    hover: true,
+    tooltipDelay: 100,
+    hideEdgesOnDrag: true,
+    navigationButtons: false,
+    keyboard: false,
+  },
+  nodes: { shape: 'dot', borderWidth: 1.5 },
+  edges: { smooth: { type: 'continuous', roundness: 0.2 }, selectionWidth: 3 },
+});
+
+network.once('stabilizationIterationsDone', () => {
+  network.setOptions({ physics: { enabled: false } });
+});
+
+function showInfo(nodeId) {
+  const n = nodesDS.get(nodeId);
+  if (!n) return;
+  const neighborIds = network.getConnectedNodes(nodeId);
+  const neighborItems = neighborIds.map(nid => {
+    const nb = nodesDS.get(nid);
+    const color = nb ? nb.color.background : '#555';
+    return `<span class="neighbor-link" style="border-left-color:${esc(color)}" onclick="focusNode(${JSON.stringify(nid)})">${esc(nb ? nb.label : nid)}</span>`;
+  }).join('');
+  document.getElementById('info-content').innerHTML = `
+    <div class="field"><b>${esc(n.label)}</b></div>
+    <div class="field">Type: ${esc(n._file_type || 'unknown')}</div>
+    <div class="field">Community: ${esc(n._community_name)}</div>
+    <div class="field">Source: ${esc(n._source_file || '-')}</div>
+    <div class="field">Degree: ${n._degree}</div>
+    ${neighborIds.length ? `<div class="field" style="margin-top:8px;color:#aaa;font-size:11px">Neighbors (${neighborIds.length})</div><div id="neighbors-list">${neighborItems}</div>` : ''}
+  `;
+}
+
+function focusNode(nodeId) {
+  network.focus(nodeId, { scale: 1.4, animation: true });
+  network.selectNodes([nodeId]);
+  showInfo(nodeId);
+}
+
+// Track hovered node — hover detection is more reliable than click params
+let hoveredNodeId = null;
+network.on('hoverNode', params => {
+  hoveredNodeId = params.node;
+  container.style.cursor = 'pointer';
+});
+network.on('blurNode', () => {
+  hoveredNodeId = null;
+  container.style.cursor = 'default';
+});
+container.addEventListener('click', () => {
+  if (hoveredNodeId !== null) {
+    showInfo(hoveredNodeId);
+    network.selectNodes([hoveredNodeId]);
+  }
+});
+network.on('click', params => {
+  if (params.nodes.length > 0) {
+    showInfo(params.nodes[0]);
+  } else if (hoveredNodeId === null) {
+    document.getElementById('info-content').innerHTML = '<span class="empty">Click a node to inspect it</span>';
+  }
+});
+
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('search-results');
+searchInput.addEventListener('input', () => {
+  const q = searchInput.value.toLowerCase().trim();
+  searchResults.innerHTML = '';
+  if (!q) { searchResults.style.display = 'none'; return; }
+  const matches = RAW_NODES.filter(n => n.label.toLowerCase().includes(q)).slice(0, 20);
+  if (!matches.length) { searchResults.style.display = 'none'; return; }
+  searchResults.style.display = 'block';
+  matches.forEach(n => {
+    const el = document.createElement('div');
+    el.className = 'search-item';
+    el.textContent = n.label;
+    el.style.borderLeft = `3px solid ${n.color.background}`;
+    el.style.paddingLeft = '8px';
+    el.onclick = () => {
+      network.focus(n.id, { scale: 1.5, animation: true });
+      network.selectNodes([n.id]);
+      showInfo(n.id);
+      searchResults.style.display = 'none';
+      searchInput.value = '';
+    };
+    searchResults.appendChild(el);
+  });
+});
+document.addEventListener('click', e => {
+  if (!searchResults.contains(e.target) && e.target !== searchInput)
+    searchResults.style.display = 'none';
+});
+
+const hiddenCommunities = new Set();
+const legendEl = document.getElementById('legend');
+LEGEND.forEach(c => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `<div class="legend-dot" style="background:${c.color}"></div>
+    <span class="legend-label">${c.label}</span>
+    <span class="legend-count">${c.count}</span>`;
+  item.onclick = () => {
+    if (hiddenCommunities.has(c.cid)) {
+      hiddenCommunities.delete(c.cid);
+      item.classList.remove('dimmed');
+    } else {
+      hiddenCommunities.add(c.cid);
+      item.classList.add('dimmed');
+    }
+    const updates = RAW_NODES
+      .filter(n => n.community === c.cid)
+      .map(n => ({ id: n.id, hidden: hiddenCommunities.has(c.cid) }));
+    nodesDS.update(updates);
+  };
+  legendEl.appendChild(item);
+});
+</script>
+<script>
+// Render hyperedges as shaded regions
+const hyperedges = [{"id": "backend_turn_generation_stack", "label": "Backend Turn Generation Stack", "nodes": ["prompt_cognition_arch_backend_api_contract", "prompt_cognition_arch_structured_turn_generation", "web_infra_local_backend_architecture", "ollama_backend_fastapi_server", "ollama_backend_ollama_stack", "ollama_backend_schema_repair"], "relation": "participate_in", "confidence": "INFERRED", "confidence_score": 0.89, "source_file": "raw/10_Ollama_Local_Backend.md"}, {"id": "vn_runtime_presentation_stack", "label": "VN Runtime Presentation Stack", "nodes": ["visual_orch_asset_library", "visual_orch_candidate_filtering", "visual_orch_layered_mode", "visual_orch_cg_mode", "visual_layer_vn_layer_stack", "vn_dialog_ui_vn_dialog_ui", "vn_dialog_ui_typing_effect", "sound_orch_audio_orchestration"], "relation": "participate_in", "confidence": "INFERRED", "confidence_score": 0.86, "source_file": "raw/06_Visual_Layer_System.md"}, {"id": "content_lane_governance", "label": "Content Lane Governance", "nodes": ["safety_guardrails_rating_lane", "safety_guardrails_safety_policy", "safety_guardrails_asset_lane_separation", "safety_guardrails_player_toggles", "visual_orch_candidate_filtering", "sound_orch_audio_orchestration"], "relation": "form", "confidence": "INFERRED", "confidence_score": 0.84, "source_file": "raw/09_Anti_Filter_Safety_Mechanism.md"}];
+// afterDrawing passes ctx already transformed to network coordinate space.
+// Draw node positions raw — no manual pan/zoom/DPR math needed.
+network.on('afterDrawing', function(ctx) {
+    hyperedges.forEach(h => {
+        const positions = h.nodes
+            .map(nid => network.getPositions([nid])[nid])
+            .filter(p => p !== undefined);
+        if (positions.length < 2) return;
+        ctx.save();
+        ctx.globalAlpha = 0.12;
+        ctx.fillStyle = '#6366f1';
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Centroid and expanded hull in network coordinates
+        const cx = positions.reduce((s, p) => s + p.x, 0) / positions.length;
+        const cy = positions.reduce((s, p) => s + p.y, 0) / positions.length;
+        const expanded = positions.map(p => ({
+            x: cx + (p.x - cx) * 1.15,
+            y: cy + (p.y - cy) * 1.15
+        }));
+        ctx.moveTo(expanded[0].x, expanded[0].y);
+        expanded.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+        ctx.closePath();
+        ctx.fill();
+        ctx.globalAlpha = 0.4;
+        ctx.stroke();
+        // Label
+        ctx.globalAlpha = 0.8;
+        ctx.fillStyle = '#4f46e5';
+        ctx.font = 'bold 11px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(h.label, cx, cy - 5);
+        ctx.restore();
+    });
+});
+</script>
+</body>
+</html>

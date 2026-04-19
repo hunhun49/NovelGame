@@ -1,0 +1,97 @@
+{
+	"version": "1",
+	"backgrounds": [
+		{
+			"id": "demo_room_evening",
+			"file": "backgrounds/demo_room_evening.jpg",
+			"location": "demo_room",
+			"time_of_day": "evening",
+			"weather": "clear",
+			"rating": "general",
+			"mood_tags": ["calm", "intro"]
+		},
+		{
+			"id": "demo_room_night",
+			"file": "backgrounds/demo_room_night.jpg",
+			"location": "demo_room",
+			"time_of_day": "night",
+			"weather": "rain",
+			"rating": "general",
+			"mood_tags": ["quiet", "tense"]
+		}
+	],
+	"sprites": [
+		{
+			"id": "demo_guide_neutral",
+			"file": "sprites/demo_guide_neutral.png",
+			"character_id": "demo_guide",
+			"expression": "neutral",
+			"pose": "standing",
+			"outfit": "default",
+			"rating": "general",
+			"state_tags": ["default"]
+		},
+		{
+			"id": "demo_guide_smile",
+			"file": "sprites/demo_guide_smile.png",
+			"character_id": "demo_guide",
+			"expression": "smile",
+			"pose": "standing",
+			"outfit": "default",
+			"rating": "general",
+			"state_tags": ["warm"]
+		}
+	],
+	"cgs": [
+		{
+			"id": "demo_event_flashback",
+			"file": "cgs/demo_event_flashback.png",
+			"event_type": "milestone",
+			"character_ids": ["demo_guide"],
+			"rating": "general",
+			"required_flags": [],
+			"blocked_flags": [],
+			"mood_tags": ["memory", "highlight"]
+		}
+	],
+	"bgms": [
+		{
+			"id": "MainMenu",
+			"file": "bgms/StoryMode.wav",
+			"rating": "general",
+			"mood_tags": ["menu"]
+		},
+		{
+			"id": "StoryMode",
+			"file": "bgms/MainMenu.wav",
+			"rating": "general",
+			"mood_tags": ["story"]
+		}
+	],
+	"sfxs": [
+		{
+			"id": "button_hover",
+			"file": "sfxs/button_hover.wav",
+			"rating": "general",
+			"trigger_tags": ["ui"]
+		},
+		{
+			"id": "button_down",
+			"file": "sfxs/button_down.wav",
+			"rating": "general",
+			"trigger_tags": ["ui"]
+		},
+		{
+			"id": "button_up",
+			"file": "sfxs/button_up.wav",
+			"rating": "general",
+			"trigger_tags": ["ui"]
+		},
+		{
+			"id": "dialogue_text_next",
+			"file": "sfxs/dialogue_text_next.wav",
+			"rating": "general",
+			"trigger_tags": ["dialogue"]
+		}
+	]
+}

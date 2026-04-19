@@ -249,7 +249,8 @@ func build_empty_world() -> Dictionary:
 		"square_cover_path": "",
 		"portrait_cover_path": "",
 		"default_rating_lane": "general",
-		"notes": ""
+		"notes": "",
+		"backgrounds": []
 	}
 
 
@@ -387,8 +388,29 @@ func _normalize_world(raw_world: Dictionary, previous_id: String = "") -> Dictio
 		"square_cover_path": str(raw_world.get("square_cover_path", "")).strip_edges(),
 		"portrait_cover_path": str(raw_world.get("portrait_cover_path", "")).strip_edges(),
 		"default_rating_lane": _normalize_rating_lane(str(raw_world.get("default_rating_lane", "general"))),
-		"notes": str(raw_world.get("notes", "")).strip_edges()
+		"notes": str(raw_world.get("notes", "")).strip_edges(),
+		"backgrounds": _normalize_backgrounds(raw_world.get("backgrounds", []))
 	}
+
+
+func _normalize_backgrounds(raw_backgrounds) -> Array:
+	var result: Array = []
+	if not raw_backgrounds is Array:
+		return result
+	for raw_bg in raw_backgrounds:
+		if not raw_bg is Dictionary:
+			continue
+		var name_val := str(raw_bg.get("name", "")).strip_edges()
+		var description_val := str(raw_bg.get("description", "")).strip_edges()
+		var image_path_val := str(raw_bg.get("image_path", "")).strip_edges()
+		if name_val.is_empty() and description_val.is_empty() and image_path_val.is_empty():
+			continue
+		result.append({
+			"image_path": image_path_val,
+			"name": name_val,
+			"description": description_val
+		})
+	return result
 
 
 func _normalize_character(raw_character: Dictionary, previous_id: String = "") -> Dictionary:

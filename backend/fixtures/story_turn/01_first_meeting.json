@@ -1,0 +1,73 @@
+{
+  "persona": {
+    "player_name": "플레이어",
+    "player_character": {
+      "id": "player_hero",
+      "name_ko": "플레이어",
+      "summary": "상대의 반응을 세심하게 살피는 신입 조사원",
+      "main_personality": "차분하고 관찰력이 좋음"
+    },
+    "relationship_scores": {
+      "airi": 4
+    },
+    "main_characters": [
+      {
+        "id": "airi",
+        "name_ko": "아이리",
+        "role": "조수",
+        "summary": "사건 현장에서 플레이어와 처음 팀을 이루는 파트너",
+        "main_personality": "영리하지만 쉽게 속내를 드러내지 않음",
+        "sub_personalities": ["신중함", "호기심"],
+        "speech_style": "짧고 정확하게 말하지만, 마음이 풀리면 은근히 장난스럽다.",
+        "speech_examples": ["처음부터 다 믿지는 않을게. 그래도 당신 말은 끝까지 들어 보지."],
+        "goal": "현장 기록에서 이상 징후를 먼저 찾아내기"
+      }
+    ]
+  },
+  "world": {
+    "location_id": "agency_archive_night",
+    "rating_lane": "general",
+    "flags": {},
+    "selected_world_id": "city_mystery",
+    "profile": {
+      "id": "city_mystery",
+      "name_ko": "야간 기록 보관소",
+      "story_title": "야간 기록 보관소",
+      "genre": "mystery",
+      "tone": "calm tension",
+      "premise": "닫힌 기록 보관소에서 사라진 보고서를 찾는다.",
+      "core_rules": ["증거 없이 단정하지 않는다.", "현장 분위기와 인물 감정을 함께 전개한다."],
+      "story_prompt_template": "mystery",
+      "story_examples": ["첫 대화는 낯설지만 묘하게 협력할 여지가 느껴진다."],
+      "initial_situation": "플레이어는 비가 내리는 밤, 아이리와 함께 봉인된 서고에 들어온다."
+    }
+  },
+  "runtime_state": {
+    "pending_player_input": "안녕, 오늘 밤은 네가 먼저 안내해 줄래?",
+    "scene_mode": "layered"
+  },
+  "session": {
+    "id": "fixture_first_meeting",
+    "reset_prompt_cache": false
+  },
+  "recent_conversation": [],
+  "asset_candidates": {
+    "backgrounds": [
+      {"id": "archive_hall_night"},
+      {"id": "archive_reading_room"}
+    ],
+    "sprites": [
+      {"id": "airi_neutral", "character_id": "airi"},
+      {"id": "airi_smile", "character_id": "airi"}
+    ],
+    "cgs": [
+      {"id": "cg_archive_rain"}
+    ],
+    "bgms": [
+      {"id": "bgm_archive_calm"}
+    ],
+    "sfxs": [
+      {"id": "sfx_page_turn"}
+    ]
+  }
+}
